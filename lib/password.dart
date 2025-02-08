@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class SetPassword extends StatefulWidget {
-  const SetPassword({Key? key}) : super(key: key);
+  const SetPassword({super.key});
 
   @override
   _SetPasswordState createState() => _SetPasswordState();
@@ -16,7 +16,7 @@ class _SetPasswordState extends State<SetPassword> {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/Lo.jpg'),
+          image: AssetImage('assets/logpic.jpg'),
           fit: BoxFit.cover,
         ),
       ),
@@ -77,6 +77,10 @@ class _SetPasswordState extends State<SetPassword> {
                         onPressed: () {
                           sendPasswordResetEmail();
                         },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(vertical: 11),
+                            backgroundColor: Color(0xFF8C52FF),
+                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -91,10 +95,6 @@ class _SetPasswordState extends State<SetPassword> {
                               ),
                             ),
                           ],
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: 11),
-                          backgroundColor: Colors.lightBlueAccent,
                         ),
                       ),
                     ),
@@ -111,7 +111,7 @@ class _SetPasswordState extends State<SetPassword> {
                             style: TextStyle(
                               decoration: TextDecoration.underline,
                               fontSize: 18,
-                              color: Colors.blue,
+                              color: Colors.black,
                             ),
                           ),
                         ),
@@ -122,7 +122,7 @@ class _SetPasswordState extends State<SetPassword> {
                           child: Text(
                             'Register',
                             style: TextStyle(
-                              color: Colors.blue,
+                              color: Colors.black,
                               decoration: TextDecoration.underline,
                               fontSize: 18,
                             ),

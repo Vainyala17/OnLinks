@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class MyRegister extends StatefulWidget {
-  const MyRegister({Key? key}) : super(key: key);
+  const MyRegister({super.key});
 
   @override
   _MyRegisterState createState() => _MyRegisterState();
@@ -89,7 +89,7 @@ class _MyRegisterState extends State<MyRegister> {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/Lo.jpg'),
+          image: AssetImage('assets/logpic.jpg'),
           fit: BoxFit.cover,
         ),
       ),
@@ -219,6 +219,10 @@ class _MyRegisterState extends State<MyRegister> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: _register,
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(vertical: 11),
+                          backgroundColor: Color(0xFF6728FF),
+                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -237,10 +241,6 @@ class _MyRegisterState extends State<MyRegister> {
                               ),
                             ),
                           ],
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: 11),
-                          backgroundColor: Colors.lightBlueAccent,
                         ),
                       ),
                     ),
@@ -273,7 +273,7 @@ class _MyRegisterState extends State<MyRegister> {
                                 TextSpan(
                                   text: 'Login',
                                   style: TextStyle(
-                                    color: Colors.blue,
+                                    color: Colors.black,
                                     decoration: TextDecoration.underline,
                                   ),
                                 ),

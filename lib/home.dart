@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:share_plus/share_plus.dart';
@@ -17,7 +16,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 class HomePage extends StatefulWidget {
   final void Function(ThemeMode mode) onThemeModeChanged;
 
-  const HomePage({Key? key, required this.onThemeModeChanged}) : super(key: key);
+  const HomePage({super.key, required this.onThemeModeChanged});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -163,68 +162,65 @@ class _HomePageState extends State<HomePage> {
         break;
     }
   }
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     final User? currentUser = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
+        backgroundColor: Colors.grey[800], // Dark background like the image
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.menu, color: Colors.white), // Drawer icon
+          onPressed: () {
+            _scaffoldKey.currentState?.openDrawer();
           },
         ),
-        title: TextField(
-          controller: _searchController,
-          decoration: InputDecoration(
-            hintText: 'Search...',
-            filled: true,
-            fillColor: Colors.white,
-            prefixIcon: Icon(Icons.search),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide.none,
+        title: Container(
+          decoration: BoxDecoration(
+            color: Colors.white, // White background for search
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: "Search...",
+              prefixIcon: Icon(Icons.search, color: Colors.black54), // Search icon
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.symmetric(vertical: 12),
             ),
           ),
-          onChanged: (value) {
-            _filterForms(value); // Update the filter as the user types
-          },
         ),
-        actions: [
-          DropdownButton<ThemeMode>(
-            value: Theme
-                .of(context)
-                .brightness == Brightness.dark
-                ? ThemeMode.dark
-                : ThemeMode.light,
-            onChanged: (ThemeMode? mode) {
-              if (mode != null) {
-                widget.onThemeModeChanged(
-                    mode); // Call the onThemeModeChanged callback
-              }
-            },
-            items: const [
-              DropdownMenuItem(
-                value: ThemeMode.light,
-                child: Text('Light Mode'),
-              ),
-              DropdownMenuItem(
-                value: ThemeMode.dark,
-                child: Text('Dark Mode'),
-              ),
-              DropdownMenuItem(
-                value: ThemeMode.system,
-                child: Text('System Default'),
-              ),
-            ],
-          ),
-        ],
+        // actions: [
+        //   DropdownButton<ThemeMode>(
+        //     value: Theme
+        //         .of(context)
+        //         .brightness == Brightness.dark
+        //         ? ThemeMode.dark
+        //         : ThemeMode.light,
+        //     onChanged: (ThemeMode? mode) {
+        //       if (mode != null) {
+        //         widget.onThemeModeChanged(
+        //             mode); // Call the onThemeModeChanged callback
+        //       }
+        //     },
+        //     items: const [
+        //       DropdownMenuItem(
+        //         value: ThemeMode.light,
+        //         child: Text('Light Mode'),
+        //       ),
+        //       DropdownMenuItem(
+        //         value: ThemeMode.dark,
+        //         child: Text('Dark Mode'),
+        //       ),
+        //       DropdownMenuItem(
+        //         value: ThemeMode.system,
+        //         child: Text('System Default'),
+        //       ),
+        //     ],
+        //   ),
+        // ],
       ),
       drawer: Drawer(
         child: ListView(
@@ -232,7 +228,7 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             DrawerHeader(
               decoration: const BoxDecoration(
-                color: Colors.blue,
+                color: Colors.white,
               ),
               child: GestureDetector(
                 onTap: () {
@@ -251,7 +247,7 @@ class _HomePageState extends State<HomePage> {
                       backgroundImage: currentUser?.photoURL != null
                           ? NetworkImage(currentUser!.photoURL!)
                           : const AssetImage(
-                          'assets/default_profile.png') as ImageProvider,
+                            'assets/default_profile.png') as ImageProvider,
                     ),
                     const SizedBox(height: 10),
                     Text(
@@ -389,7 +385,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             const SizedBox(height: 16),
-            Container(
+            SizedBox(
               height: 200,
               child: PageView.builder(
                 controller: _pageController,
@@ -436,7 +432,7 @@ class _HomePageState extends State<HomePage> {
                 effect: ExpandingDotsEffect(
                   dotHeight: 8,
                   dotWidth: 8,
-                  activeDotColor: Colors.blueAccent,
+                  activeDotColor: Colors.white,
                   dotColor: Colors.grey.shade400,
                 ),
               ),

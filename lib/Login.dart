@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class MyLogin extends StatefulWidget {
-  const MyLogin({Key? key}) : super(key: key);
+  const MyLogin({super.key});
 
   @override
   _MyLoginState createState() => _MyLoginState();
@@ -45,7 +45,7 @@ class _MyLoginState extends State<MyLogin> {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/Lo.jpg'),
+          image: AssetImage('assets/logpic.jpg'),
           fit: BoxFit.cover,
         ),
       ),
@@ -153,7 +153,11 @@ class _MyLoginState extends State<MyLogin> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: _submitForm, // Call form submission method
+                          onPressed: _submitForm,
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(vertical: 11),
+                            backgroundColor: Color(0xFF8C52FF),
+                          ), // Call form submission method
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -173,10 +177,6 @@ class _MyLoginState extends State<MyLogin> {
                                 ),
                               ),
                             ],
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(vertical: 11),
-                            backgroundColor: Colors.lightBlueAccent,
                           ),
                         ),
                       ),
@@ -200,7 +200,7 @@ class _MyLoginState extends State<MyLogin> {
                                 fontFamily: "lato",
                                 decoration: TextDecoration.underline,
                                 fontSize: 18,
-                                color: Colors.blue,
+                                color: Colors.black,
                               ),
                             ),
                           ),
@@ -212,7 +212,7 @@ class _MyLoginState extends State<MyLogin> {
                               'Forgot Password ?',
                               style: TextStyle(
                                 fontFamily: "lato",
-                                color: Colors.blue,
+                                color: Colors.black,
                                 decoration: TextDecoration.underline,
                                 fontSize: 18,
                               ),

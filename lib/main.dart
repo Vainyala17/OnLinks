@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_project/password.dart';
 import 'package:flutter_project/register.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_project/services/firebase_messaging_service.dart';
 import 'HealthPage.dart';
 import 'BankingPage.dart';
@@ -28,7 +28,9 @@ void main() async {
 
   try {
     await Firebase.initializeApp();
-    await FirebaseAppCheck.instance.activate();
+    await FirebaseAppCheck.instance.activate(
+      webProvider: ReCaptchaV3Provider('your-site-key'),
+    );
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     await FirebaseMessagingService.initialize();
   } catch (e) {
@@ -41,7 +43,7 @@ void main() async {
 
 class MyApp extends StatefulWidget {
   final ThemeMode savedThemeMode;
-  MyApp({required this.savedThemeMode});
+  const MyApp({super.key, required this.savedThemeMode});
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -87,7 +89,7 @@ class _MyAppState extends State<MyApp> {
           'HealthPage': (context) => HealthPage(),
           'BankingPage': (context) => BankingPage(),
           'GovernmentPage': (context) => GovernmentPage(),
-          'GovernmentPage': (context) => EducationPage(),
+          'EducationPage': (context) => EducationPage(),
         },
         home: AppInitializer(
           onThemeModeChanged: _updateThemeMode,
@@ -100,14 +102,14 @@ class _MyAppState extends State<MyApp> {
 class AppInitializer extends StatelessWidget {
   final Function(ThemeMode) onThemeModeChanged;
 
-  AppInitializer({required this.onThemeModeChanged});
+  const AppInitializer({super.key, required this.onThemeModeChanged});
 
   Future<void> _initializeApp() async {
     try {
       final FirebaseFirestore db = FirebaseFirestore.instance;
       final CollectionReference users = db.collection('users');
       final DocumentSnapshot snapshot = await users.doc('user').get();
-      final userFields = snapshot.data(); // You can use this data if needed
+      final userFields = snapshot.data() ?? {}; // You can use this data if needed
     } catch (e) {
       print("Error fetching user data: $e");
     }

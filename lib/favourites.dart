@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class FavouritesPage extends StatefulWidget {
-  const FavouritesPage({Key? key}) : super(key: key);
+  const FavouritesPage({super.key});
 
   @override
   _FavouritesPageState createState() => _FavouritesPageState();
@@ -81,7 +81,7 @@ class _FavouritesPageState extends State<FavouritesPage> {
       body: Column(
         children: [
           // PageView for image carousel
-          Container(
+          SizedBox(
             height: 200, // Adjust the height as needed
             child: PageView.builder(
               controller: _pageController,
@@ -112,7 +112,7 @@ class FavoritesPage extends StatelessWidget {
   final List<String> favoriteLinks;
 
   // Constructor to accept the list of favorite links
-  const FavoritesPage({Key? key, required this.favoriteLinks}) : super(key: key);
+  const FavoritesPage({super.key, required this.favoriteLinks});
 
   @override
   Widget build(BuildContext context) {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class BankingPage extends StatefulWidget {
-  const BankingPage({Key? key}) : super(key: key);
+  const BankingPage({super.key});
 
   @override
   _BankingPageState createState() => _BankingPageState();
@@ -39,7 +39,7 @@ class _BankingPageState extends State<BankingPage> {
 
 class FormDetailsPage extends StatelessWidget {
   final String formName;
-  FormDetailsPage({required this.formName});
+  const FormDetailsPage({super.key, required this.formName});
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +60,8 @@ class SortedFormsPage extends StatelessWidget {
     {'name': 'Bank Form 2', 'popularity': 10},
     {'name': 'Bank Form 3', 'popularity': 3},
   ];
+
+  SortedFormsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +86,8 @@ class SortedFormsPage extends StatelessWidget {
 
 class SuggestedFormsPage extends StatelessWidget {
   final List<String> suggestedForms = ['Bank Form 1', 'Bank Form 2', 'Bank Form 3'];
+
+  SuggestedFormsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +116,8 @@ class SuggestedFormsPage extends StatelessWidget {
 }
 
 class LanguageSelectionPage extends StatelessWidget {
+  const LanguageSelectionPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
