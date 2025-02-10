@@ -1,22 +1,22 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_project/password.dart';
-import 'package:flutter_project/register.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_project/services/firebase_messaging_service.dart';
-import 'HealthPage.dart';
-import 'BankingPage.dart';
-import 'EducationPage.dart';
-import 'GovernmentPage.dart';
-import 'Login.dart';
+import 'CategoryOptions/BankingPage.dart';
+import 'CategoryOptions/EducationPage.dart';
+import 'CategoryOptions/GovernmentPage.dart';
+import 'CategoryOptions/HealthPage.dart';
+import 'LogReg/Login.dart';
+import 'LogReg/password.dart';
+import 'LogReg/register.dart';
+import 'PrivateInfo/favourites.dart';
+import 'PrivateInfo/instructionalVideos.dart';
+import 'PrivateInfo/search_controller.dart';
+import 'PrivateInfo/theme_preference.dart';
 import 'home.dart';
-import 'favourites.dart';
-import 'instructionalVideos.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
-import 'package:flutter_project/search_controller.dart';
-import 'theme_preference.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {

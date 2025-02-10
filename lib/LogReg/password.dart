@@ -79,7 +79,7 @@ class _SetPasswordState extends State<SetPassword> {
                         },
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.symmetric(vertical: 11),
-                            backgroundColor: Color(0xFF8C52FF),
+                          backgroundColor: Color(0xFF8C52FF),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,

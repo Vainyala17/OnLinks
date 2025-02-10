@@ -1,23 +1,24 @@
+import 'dart:async';
+
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'favourites.dart';
-import 'instructionalVideos.dart';
-import 'userProfile.dart'; // Import the user profile page
-import 'HealthPage.dart';
-import 'BankingPage.dart';
-import 'EducationPage.dart';
-import 'GovernmentPage.dart';
-import 'settingPage.dart';
+import 'CategoryOptions/BankingPage.dart';
+import 'CategoryOptions/EducationPage.dart';
+import 'CategoryOptions/GovernmentPage.dart';
+import 'CategoryOptions/HealthPage.dart';
+import 'PrivateInfo/favourites.dart';
+import 'PrivateInfo/instructionalVideos.dart';
+import 'PrivateInfo/privacy_policy.dart';
+import 'PrivateInfo/settingPage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
+import 'PrivateInfo/userProfile.dart';
 
 class HomePage extends StatefulWidget {
   final void Function(ThemeMode mode) onThemeModeChanged;
-
   const HomePage({super.key, required this.onThemeModeChanged});
-
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -26,6 +27,7 @@ class _HomePageState extends State<HomePage> {
   late FirebaseMessaging _messaging;
   final PageController _pageController = PageController();
   final TextEditingController _searchController = TextEditingController();
+  late Timer _timer;
   final List<String> imageUrls = [
     'https://egov.eletsonline.com/wp-content/uploads/2016/04/MahaLogo-1.png',
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVD5h2x2fZ1DozJ5aJwToB1CH9X0UwOhAfeGHm9usD-HgZLuL1SlmDYkHrVJB7JOd2oA&usqp=CAU',
@@ -34,7 +36,7 @@ class _HomePageState extends State<HomePage> {
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkgmj-AmZNelpJa1uLc2phMjL6eOuM7n_sr8CT_bMlYT3xHkKW0U6N2OgiVflLSOs5DME&usqp=CAU',
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2h3_C2bDX119k2M_oxMqCXHEEpkviNT2HDQ&s',
   ];
-
+  int _currentPage = 0;
   List<String> favoriteLinks = [];
   List<String> filteredForms = [];
   String? selectedCategory;
@@ -55,6 +57,18 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _timer = Timer.periodic(Duration(seconds: 3), (Timer timer) {
+      if (_currentPage < imageUrls.length - 1) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
+      _pageController.animateToPage(
+        _currentPage,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    });
     _setupFCM();
   }
   void _setupFCM() async {
@@ -105,6 +119,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     _pageController.dispose();
+    _timer.cancel();
     _searchController.dispose();
     super.dispose();
   }
@@ -137,25 +152,25 @@ class _HomePageState extends State<HomePage> {
       case 'Health':
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const HealthPage()),
+          MaterialPageRoute(builder: (context) => HealthPage()),
         );
         break;
       case 'Banking':
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const BankingPage()),
+          MaterialPageRoute(builder: (context) => BankingPage()),
         );
         break;
       case 'Education':
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const EducationPage()),
+          MaterialPageRoute(builder: (context) =>  EducationPage()),
         );
         break;
       case 'Government':
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const GovernmentPage()),
+          MaterialPageRoute(builder: (context) => GovernmentPage()),
         );
         break;
       default:
@@ -164,9 +179,25 @@ class _HomePageState extends State<HomePage> {
   }
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
+  Widget _buildImageSlider() {
+    return CarouselSlider(
+      options: CarouselOptions(
+        height: 200, // Set the height of the carousel
+        autoPlay: true, // Enable auto-scroll
+        autoPlayInterval: Duration(seconds: 3), // Change image every 3 seconds
+        enlargeCenterPage: true,
+        viewportFraction: 0.9, // Show partial next/previous images
+      ),
+      items: imageUrls.map((url) {
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(10), // Rounded corners
+          child: Image.network(url, fit: BoxFit.cover, width: double.infinity),
+        );
+      }).toList(),
+    );
+  }
   Widget build(BuildContext context) {
     final User? currentUser = FirebaseAuth.instance.currentUser;
-
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -310,8 +341,10 @@ class _HomePageState extends State<HomePage> {
               leading: Icon(Icons.lock),
               title: Text('Privacy Policy'),
               onTap: () {
-                print('Privacy Policy clicked');
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PrivacyPolicyPage()),
+                );
               },
             ),
             Divider(),
