@@ -224,7 +224,7 @@ class _MyRegisterState extends State<MyRegister> {
                         onPressed: _register,
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.symmetric(vertical: 11),
-                          backgroundColor: Color(0xFF6728FF),
+                          backgroundColor: Color(0xFF2196F3),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,

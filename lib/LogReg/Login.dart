@@ -163,7 +163,7 @@ class _MyLoginState extends State<MyLogin> {
                           onPressed: _submitForm,
                           style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(vertical: 11),
-                            backgroundColor: Color(0xFF8C52FF),
+                            backgroundColor: Color(0xFF2196F3),
                           ), // Call form submission method
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,

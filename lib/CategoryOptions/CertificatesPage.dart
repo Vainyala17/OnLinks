@@ -1,52 +1,133 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class CertificatesPage extends StatefulWidget {
+class CertificatePage extends StatefulWidget {
   @override
-  _CertificatesPageState createState() => _CertificatesPageState();
+  _CertificatePageState createState() => _CertificatePageState();
 }
 
-class _CertificatesPageState extends State<CertificatesPage> {
+class _CertificatePageState extends State<CertificatePage> {
+  final List<Map<String, String>> forms = [
+    {
+      'title': 'PCC',
+      'description': 'Police Clearance Services Maharashtra Police',
+      'url': 'https://pcs.mahaonline.gov.in/Forms/Home.aspx',
+      'image': 'https://pcs.mahaonline.gov.in/Images/police-logo.png',
+    },
+  ];
+
+  String searchQuery = "";
+
+  @override
+  Widget build(BuildContext context) {
+    List<Map<String, String>> filteredForms = forms
+        .where((form) => form['title']!.toLowerCase().contains(searchQuery.toLowerCase()))
+        .toList();
+
+    return Scaffold(
+      appBar: AppBar(title: Text('Certificate Forms')),
+      body: Column(
+        children: [
+          _buildSearchBar(),
+          Expanded(child: _buildFormsList(filteredForms)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextField(
+        onChanged: (query) {
+          setState(() {
+            searchQuery = query;
+          });
+        },
+        decoration: InputDecoration(
+          hintText: "Search forms...",
+          prefixIcon: Icon(Icons.search),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFormsList(List<Map<String, String>> forms) {
+    return ListView.builder(
+      itemCount: forms.length,
+      itemBuilder: (context, index) {
+        return _buildCertificateCard(forms[index]);
+      },
+    );
+  }
+
+  Widget _buildCertificateCard(Map<String, String> form) {
+    return Card(
+      margin: EdgeInsets.all(10),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      elevation: 4,
+      child: ListTile(
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Image.network(form['image']!, width: 60, height: 60, fit: BoxFit.cover),
+        ),
+        title: Text(form['title']!, style: TextStyle(fontWeight: FontWeight.bold)),
+        subtitle: Text(form['description']!),
+        trailing: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFF6366F1),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FormDetailsPage(form: form),
+              ),
+            );
+          },
+          child: Text("Open", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        ),
+      ),
+    );
+  }
+}
+
+class FormDetailsPage extends StatelessWidget {
+  final Map<String, String> form;
+
+  FormDetailsPage({required this.form});
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Certificates Forms')),
-      body: Center(
+      appBar: AppBar(title: Text(form['title']!)),
+      body: Center(  // Ensures the grid is centered
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,  // Centers content vertically
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF6366F1),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                minimumSize: Size(200, 50),
-              ),
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ClosedFormsPage()),
-              ),
-              child: Text(
-                "Closed Forms",
-                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF6366F1),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                minimumSize: Size(200, 50),
-              ),
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => OpenedFormsPage()),
-              ),
-              child: Text(
-                "Latest Opened Forms",
-                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+            Align(
+              alignment: Alignment.center,
+              child: GridView.count(
+                shrinkWrap: true,  // Ensures the GridView doesn't take full height
+                crossAxisCount: 2,  // 2 columns
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20,
+                childAspectRatio: 0.7,  // Adjust the height of the grid items
+                children: [
+                  _buildGridItem(Icons.edit, "Fill the form here", () => _launchURL(form['url']!)),
+                  _buildGridItem(Icons.play_circle_fill, "Watch the video", () {
+                    // Add your video link logic here
+                  }),
+                  _buildGridItem(Icons.share, "Share the link", () {
+                    // Add sharing logic
+                  }),
+                  _buildGridItem(Icons.favorite, "Favorite", () {
+                    // Add favorite logic
+                  }),
+                ],
               ),
             ),
           ],
@@ -54,192 +135,24 @@ class _CertificatesPageState extends State<CertificatesPage> {
       ),
     );
   }
-}
-
-class ClosedFormsPage extends StatefulWidget {
-  @override
-  _ClosedFormsPageState createState() => _ClosedFormsPageState();
-}
-
-class _ClosedFormsPageState extends State<ClosedFormsPage> {
-  final List<Map<String, String>> closedForms = [
-    {
-      'title': 'SBI Clerk Application Form',
-      'description': 'Apply for an SBI Clerk Post.',
-      'url': 'https://ibpsonline.ibps.in/sbijaoct23/',
-      'image': 'https://images.careerindia.com/img/2021/06/sbiclerkadmitcard2021-1624963884.jpg',
-    },
-  ];
-  String searchQuery = "";
-
-  Widget build(BuildContext context) {
-    List<Map<String, String>> filteredForms = closedForms
-        .where((form) => form['title']!.toLowerCase().contains(searchQuery.toLowerCase()))
-        .toList();
-    return Scaffold(
-      appBar: AppBar(title: Text('Closed Forms')),
-      body: Column(
-        children: [
-          _buildSearchBar(),
-          Expanded(child: _buildFormsList(filteredForms)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSearchBar() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextField(
-        onChanged: (query) {
-          setState(() {
-            searchQuery = query;
-          });
-        },
-        decoration: InputDecoration(
-          hintText: "Search closed forms...",
-          prefixIcon: Icon(Icons.search),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+  Widget _buildGridItem(IconData icon, String title, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(color: Colors.black, blurRadius: 5, spreadRadius: 2),
+          ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildFormsList(List<Map<String, String>> forms) {
-    return ListView.builder(
-      itemCount: forms.length,
-      itemBuilder: (context, index) {
-        return _buildCertificatesCard(forms[index]);
-      },
-    );
-  }
-
-  Widget _buildCertificatesCard(Map<String, String> form) {
-    return Card(
-      margin: EdgeInsets.all(10),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      elevation: 4,
-      child: ListTile(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Image.network(form['image']!, width: 60, height: 60, fit: BoxFit.cover),
-        ),
-        title: Text(form['title']!, style: TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(form['description']!),
-        trailing: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFF6366F1),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          ),
-          onPressed: () => _launchURL(form['url']!),
-          child: Text("Open", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        ),
-      ),
-    );
-  }
-}
-
-class OpenedFormsPage extends StatefulWidget {
-  @override
-  _OpenedFormsPageState createState() => _OpenedFormsPageState();
-}
-
-class _OpenedFormsPageState extends State<OpenedFormsPage> {
-  final List<Map<String, String>> openedForms = [
-    {
-      'title': 'Union Bank Saving Account Form',
-      'description': 'Apply for a Union Digital Savings Account!',
-      'url': 'https://casa.unionbankofindia.co.in/savings-account/#/basic-details',
-      'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-3VhitzYajMduxAA-1KWY2ox_wMhvjsxLNA&s',
-    },
-    {
-      'title': 'Aadhaar Services',
-      'description': 'Update, Retrieve, or Download your Aadhaar.',
-      'url': 'https://myaadhaar.uidai.gov.in/en_IN',
-      'image': 'https://i0.wp.com/techsevi.com/wp-content/uploads/2019/06/Aadhar-Card.jpg?fit=640%2C426&ssl=1',
-    },
-    {
-      'title': 'HDFC Bank Recruitment',
-      'description': 'Recruitment of Relationship Managers - Probationary Officer Program',
-      'url': 'https://ibpsonline.ibps.in/hdfcrmaug24/',
-      'image': 'https://1000logos.net/wp-content/uploads/2021/06/HDFC-Bank-emblem.png',
-    },
-    {
-      'title': 'Aadhaar Services',
-      'description': 'Update, Retrieve, or Download your Aadhaar.',
-      'url': 'https://myaadhaar.uidai.gov.in/en_IN',
-      'image': 'https://i0.wp.com/techsevi.com/wp-content/uploads/2019/06/Aadhar-Card.jpg?fit=640%2C426&ssl=1',
-    },
-    {
-      'title': 'Aadhaar Services',
-      'description': 'Update, Retrieve, or Download your Aadhaar.',
-      'url': 'https://myaadhaar.uidai.gov.in/en_IN',
-      'image': 'https://i0.wp.com/techsevi.com/wp-content/uploads/2019/06/Aadhar-Card.jpg?fit=640%2C426&ssl=1',
-    },
-  ];
-  String searchQuery = "";
-
-  Widget build(BuildContext context) {
-    List<Map<String, String>> filteredForms = openedForms
-        .where((form) => form['title']!.toLowerCase().contains(searchQuery.toLowerCase()))
-        .toList();
-    return Scaffold(
-      appBar: AppBar(title: Text('Latest Opened Forms')),
-      body: Column(
-        children: [
-          _buildSearchBar(),
-          Expanded(child: _buildFormsList(filteredForms)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSearchBar() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextField(
-        onChanged: (query) {
-          setState(() {
-            searchQuery = query;
-          });
-        },
-        decoration: InputDecoration(
-          hintText: "Search opened forms...",
-          prefixIcon: Icon(Icons.search),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFormsList(List<Map<String, String>> forms) {
-    return ListView.builder(
-      itemCount: forms.length,
-      itemBuilder: (context, index) {
-        return _buildCertificatesCard(forms[index]);
-      },
-    );
-  }
-
-  Widget _buildCertificatesCard(Map<String, String> form) {
-    return Card(
-      margin: EdgeInsets.all(10),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      elevation: 4,
-      child: ListTile(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Image.network(form['image']!, width: 60, height: 60, fit: BoxFit.cover),
-        ),
-        title: Text(form['title']!, style: TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(form['description']!),
-        trailing: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFF6366F1),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          ),
-          onPressed: () => _launchURL(form['url']!),
-          child: Text("Open", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 60, color: Colors.blue),
+            SizedBox(height: 10),
+            Text(title, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+          ],
         ),
       ),
     );

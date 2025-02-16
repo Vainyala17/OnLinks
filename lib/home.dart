@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'CategoryOptions/BankingPage.dart';
 import 'CategoryOptions/CertificatesPage.dart';
@@ -148,7 +147,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => HealthPage()));
                   break;
                 case 'Certificates':
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => CertificatesPage()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => CertificatePage()));
                   break;
                 default:
                   break;
