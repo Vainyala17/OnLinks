@@ -135,8 +135,9 @@ class _MyRegisterState extends State<MyRegister> {
                     ),
                     TextField(
                       controller: _emailController,
+                      style: TextStyle(color: Colors.black),
                       decoration: InputDecoration(
-                        fillColor: Colors.grey.shade100,
+                        fillColor: Colors.white,
                         filled: true,
                         hintText: 'Enter Email',
                         border: OutlineInputBorder(
@@ -159,9 +160,10 @@ class _MyRegisterState extends State<MyRegister> {
                     ),
                     TextField(
                       controller: _passwordController,
+                      style: TextStyle(color: Colors.black),
                       obscureText: _obscurePassword,
                       decoration: InputDecoration(
-                        fillColor: Colors.grey.shade100,
+                        fillColor: Colors.white,
                         filled: true,
                         hintText: 'Enter Password',
                         border: OutlineInputBorder(
@@ -194,9 +196,10 @@ class _MyRegisterState extends State<MyRegister> {
                     ),
                     TextField(
                       controller: _confirmPasswordController,
+                      style: TextStyle(color: Colors.black),
                       obscureText: _obscureConfirmPassword,
                       decoration: InputDecoration(
-                        fillColor: Colors.grey.shade100,
+                        fillColor: Colors.white,
                         filled: true,
                         hintText: 'Enter Confirm Password',
                         border: OutlineInputBorder(

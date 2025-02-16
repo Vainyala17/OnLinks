@@ -91,8 +91,9 @@ class _MyLoginState extends State<MyLogin> {
                       ),
                       TextFormField(
                         controller: emailController,
+                        style: TextStyle(color: Colors.black),
                         decoration: InputDecoration(
-                          fillColor: Colors.grey.shade100,
+                          fillColor: Colors.white,
                           filled: true,
                           hintText: 'Enter Email',
                           border: OutlineInputBorder(
@@ -102,6 +103,11 @@ class _MyLoginState extends State<MyLogin> {
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your email';
+                          }
+                          String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+                          RegExp regex = RegExp(pattern);
+                          if (!regex.hasMatch(value)) {
+                            return 'Enter a valid email';
                           }
                           return null; // Additional email validation can be added here
                         },
@@ -122,9 +128,10 @@ class _MyLoginState extends State<MyLogin> {
                       ),
                       TextFormField(
                         controller: passwordController,
+                        style: TextStyle(color: Colors.black),
                         obscureText: !_isPasswordVisible, // Toggle password visibility
                         decoration: InputDecoration(
-                          fillColor: Colors.grey.shade100,
+                          fillColor: Colors.white,
                           filled: true,
                           hintText: 'Enter Password',
                           border: OutlineInputBorder(

@@ -36,6 +36,7 @@ dependencies:
   provider: ^6.0.0
   firebase_auth: ^5.3.1        # Ensure this version is compatible with firebase_core
   cloud_firestore: ^5.4.4
+  convex_bottom_bar: ^3.2.0
   firebase_messaging: ^15.2.0
   firebase_app_check: ^0.3.1+7
   url_launcher: ^6.3.1

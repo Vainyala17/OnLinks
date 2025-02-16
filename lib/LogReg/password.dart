@@ -61,8 +61,9 @@ class _SetPasswordState extends State<SetPassword> {
                     ),
                     TextField(
                       controller: _emailController,
+                      style: TextStyle(color: Colors.black),
                       decoration: InputDecoration(
-                        fillColor: Colors.grey.shade100,
+                        fillColor: Colors.white,
                         filled: true,
                         hintText: 'Enter Email',
                         border: OutlineInputBorder(

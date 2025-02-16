@@ -14,6 +14,7 @@ import 'PrivateInfo/favourites.dart';
 import 'PrivateInfo/instructionalVideos.dart';
 import 'PrivateInfo/search_controller.dart';
 import 'PrivateInfo/theme_preference.dart';
+import 'bottom_nav_bar.dart';
 import 'home.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -76,14 +77,12 @@ class _MyAppState extends State<MyApp> {
         darkTheme: ThemeData.dark(), // Dark mode theme
         themeMode: _themeMode, // Dynamic theme switching
         debugShowCheckedModeBanner: false,
-        initialRoute: 'home',
+        initialRoute: 'login',
         routes: {
           'login': (context) => MyLogin(),
           'register': (context) => MyRegister(),
           'password': (context) => SetPassword(),
-          'home': (context) => HomePage(
-            onThemeModeChanged: _updateThemeMode,
-          ),
+          'home':   (context) =>  BottomNavBar(),
           'favourite': (context) => FavoritesPage(favoriteLinks: []),
           'instruVideo': (context) => InstructionalVideosPage(),
           'HealthPage': (context) => HealthPage(),
