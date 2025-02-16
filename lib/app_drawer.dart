@@ -111,7 +111,7 @@ class AppDrawer extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      FavoritesPage(favoriteLinks: favoriteLinks),
+                      FavoritesPage(favoriteLinks: List<Map<String, dynamic>>.from(favoriteLinks)),
                 ),
               );
             },

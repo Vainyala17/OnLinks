@@ -1,7 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_project/PrivateInfo/privacy_policy.dart';
+import 'package:flutter_project/PrivateInfo/settingPage.dart';
+import 'package:image_picker/image_picker.dart';
+
+import 'EditProfilePage.dart';
+// Import your Settings Page here
 
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({super.key});
@@ -11,149 +18,102 @@ class UserProfilePage extends StatefulWidget {
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
-  final _formKey = GlobalKey<FormState>();
-  final _usernameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _ageController = TextEditingController();
-  final _genderController = TextEditingController();
-  final _summaryController = TextEditingController();
-  final _aboutController = TextEditingController();
-  final _interestsController = TextEditingController();
-  final _accomplishmentsController = TextEditingController();
   File? _profilePicture;
+  final user = FirebaseAuth.instance.currentUser;
 
-  @override
-  void initState() {
-    super.initState();
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      _usernameController.text = user.displayName ?? '';
-      _emailController.text = user.email ?? '';
-    }
-  }
-
-  void _updateProfile() {
-    if (_formKey.currentState!.validate()) {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        user.updateDisplayName(_usernameController.text);
-        if (_profilePicture != null) {
-          user.updatePhotoURL(_profilePicture?.path ?? '');
-        }
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile updated successfully')),
-        );
-      }
-    }
-  }
-
-  void _pickProfilePicture() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      if (pickedFile != null) {
-        _profilePicture = File(pickedFile.path);
-      }
-    });
+  void _navigateToPage(Widget page) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => page),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('User Profile'),
+        backgroundColor: Colors.black,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Profile Picture Section
-                Center(
-                  child: Column(
-                    children: [
-                      CircleAvatar(
-                        backgroundImage: _profilePicture != null
-                            ? FileImage(_profilePicture!)
-                            : (FirebaseAuth.instance.currentUser?.photoURL != null
-                            ? NetworkImage(FirebaseAuth.instance.currentUser!.photoURL!)
-                            : null),
-                        radius: 50,
-                      ),
-                      const SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: _pickProfilePicture,
-                        child: const Text('Profile Picture'),
-                      ),
-                    ],
-                  ),
+      body: Center(
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.black,
+            borderRadius: BorderRadius.circular(30),
+          ),
+          width: MediaQuery.of(context).size.width * 0.85,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircleAvatar(
+                radius: 50,
+                backgroundImage: _profilePicture != null
+                    ? FileImage(_profilePicture!)
+                    : (user?.photoURL != null ? NetworkImage(user!.photoURL!) : null),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                user?.displayName ?? "User Name",
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              Text(
+                "@${user?.email?.split('@')[0] ?? 'username'}",
+                style: const TextStyle(color: Colors.white),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 ),
-                const SizedBox(height: 20),
-                // Fields Section
-                ..._buildInputFields(),
-                const SizedBox(height: 20),
-                // Action Buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: _updateProfile,
-                      child: const Text('Update Profile'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Followed successfully')),
-                        );
-                      },
-                      child: const Text('Follow'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                onPressed: () {
+                  _navigateToPage(const EditProfilePage());
+                },
+                child: const Text("Edit"),
+              ),
+              const SizedBox(height: 20),
+              const Divider(color: Colors.white),
+              _buildMenuItem(Icons.settings, "Setting", const SettingsPage()), // Navigate to Settings
+              _buildMenuItem(Icons.lock, "Privacy Policy", PrivacyPolicyPage()),
+              _buildMenuItem(Icons.group, "New Group", PlaceholderPage("New Group Page")),
+              _buildMenuItem(Icons.support, "Support", PlaceholderPage("Support Page")),
+              _buildMenuItem(Icons.share, "Share", PlaceholderPage("Share Page")),
+              _buildMenuItem(Icons.info, "About Us", PlaceholderPage("About Us Page")),
+            ],
           ),
         ),
       ),
     );
   }
 
-  List<Widget> _buildInputFields() {
-    final fields = [
-      {'label': 'Username', 'controller': _usernameController},
-      {'label': 'Email', 'controller': _emailController},
-      {'label': 'Age', 'controller': _ageController},
-      {'label': 'Gender', 'controller': _genderController},
-      {'label': 'Summary', 'controller': _summaryController},
-      {'label': 'About', 'controller': _aboutController},
-      {'label': 'Interests', 'controller': _interestsController},
-      {'label': 'Accomplishments', 'controller': _accomplishmentsController},
-    ];
-
-    return fields
-        .map((field) => Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: TextFormField(
-        controller: field['controller'] as TextEditingController,
-        decoration: InputDecoration(
-          labelText: field['label'] as String,
-          border: const OutlineInputBorder(),
-        ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter ${field['label']!.toLowerCase()}';
-          }
-          return null;
-        },
-      ),
-    ))
-        .toList();
+  Widget _buildMenuItem(IconData icon, String text, Widget page) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.white),
+      title: Text(text, style: const TextStyle(fontSize: 16, color: Colors.white)),
+      onTap: () {
+        _navigateToPage(page);
+      },
+    );
   }
 }
 
-extension on Object {
-  toLowerCase() {}
+// Placeholder page for navigation (Replace with actual pages)
+class PlaceholderPage extends StatelessWidget {
+  final String title;
+  const PlaceholderPage(this.title, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(title)),
+      body: Center(child: Text(title, style: const TextStyle(fontSize: 20))),
+    );
+  }
 }

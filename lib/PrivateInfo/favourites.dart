@@ -1,175 +1,135 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class FavouritesPage extends StatefulWidget {
-  const FavouritesPage({super.key});
+class FavoritesPage extends StatefulWidget {
+  final List<Map<String, dynamic>> favoriteLinks;
+
+  const FavoritesPage({super.key, required this.favoriteLinks});
 
   @override
-  _FavouritesPageState createState() => _FavouritesPageState();
+  _FavoritesPageState createState() => _FavoritesPageState();
 }
 
-class _FavouritesPageState extends State<FavouritesPage> {
-  final PageController _pageController = PageController();
-  final List<String> imageUrls = [
-    'https://egov.eletsonline.com/wp-content/uploads/2016/04/MahaLogo-1.png',
-    // Add additional image URLs as needed
-  ];
-
-  late Timer _timer;
-  int _currentPage = 0;
+class _FavoritesPageState extends State<FavoritesPage> {
+  late List<Map<String, dynamic>> favoriteLinks;
+  bool isBankSelected = true;
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(Duration(seconds: 3), (Timer timer) {
-      if (_currentPage < imageUrls.length - 1) {
-        _currentPage++;
-      } else {
-        _currentPage = 0;
-      }
-      _pageController.animateToPage(
-        _currentPage,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    _pageController.dispose();
-    super.dispose();
+    favoriteLinks = List<Map<String, dynamic>>.from(widget.favoriteLinks);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('On-Links'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              showSearch(
-                context: context,
-                delegate: CustomSearchDelegate(),
-              );
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.favorite),
-            onPressed: () {
-              // Navigate to the FavoritesPage and pass the list of favorite links
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => FavoritesPage(
-                    favoriteLinks: [
-                      'Favorite Link 1',
-                      'Favorite Link 2',
-                      'Favorite Link 3',
-                    ],
-                  ),
+        title: const Text("My Favorites"),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(50),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _searchController,
+              onChanged: (value) => setState(() {}),
+              decoration: InputDecoration(
+                hintText: "Search...",
+                prefixIcon: const Icon(Icons.search, color: Colors.black54),
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none,
                 ),
-              );
-            },
+                contentPadding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+            ),
           ),
-        ],
+        ),
       ),
-      body: Column(
-        children: [
-          // PageView for image carousel
-          SizedBox(
-            height: 200, // Adjust the height as needed
-            child: PageView.builder(
-              controller: _pageController,
-              itemCount: imageUrls.length,
-              itemBuilder: (context, index) {
-                return Image.network(imageUrls[index], fit: BoxFit.cover);
+      // body: Column(
+      //   children: [
+      //     Padding(
+      //       padding: const EdgeInsets.all(10),
+      //       child: Row(
+      //         mainAxisAlignment: MainAxisAlignment.center,
+      //         children: [
+      //           _toggleButton("Bank Forms", isBankSelected),
+      //           const SizedBox(width: 10),
+      //           _toggleButton("Scholarship Forms", !isBankSelected),
+      //         ],
+      //       ),
+      //     ),
+      //     Expanded(child: _buildFavoritesList()),
+      //   ],
+      // ),
+    );
+  }
+
+  // Widget _toggleButton(String text, bool isSelected) {
+  //   return GestureDetector(
+  //     onTap: () => setState(() => isBankSelected = text == "Bank Forms"),
+  //     child: Container(
+  //       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+  //       decoration: BoxDecoration(
+  //         color: isSelected ? Colors.orange : Colors.grey[300],
+  //         borderRadius: BorderRadius.circular(20),
+  //       ),
+  //       child: Text(
+  //         text,
+  //         style: TextStyle(
+  //           color: isSelected ? Colors.white : Colors.black,
+  //           fontWeight: FontWeight.bold,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  Widget _buildFavoritesList() {
+    String query = _searchController.text.toLowerCase();
+
+    List<Map<String, dynamic>> filteredLinks = favoriteLinks
+        .where((link) =>
+    link["category"] == (isBankSelected ? "Bank" : "Scholarship") &&
+        (link["title"].toLowerCase().contains(query) ||
+            link["description"].toLowerCase().contains(query)))
+        .toList();
+
+    if (filteredLinks.isEmpty) {
+      return const Center(child: Text("No favorite links available."));
+    }
+
+    return ListView.builder(
+      itemCount: filteredLinks.length,
+      itemBuilder: (context, index) {
+        return Card(
+          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          child: ListTile(
+            title: Text(filteredLinks[index]["title"]),
+            subtitle: Text(filteredLinks[index]["description"]),
+            trailing: IconButton(
+              icon: const Icon(Icons.bookmark_remove, color: Colors.red),
+              onPressed: () {
+                setState(() {
+                  favoriteLinks.remove(filteredLinks[index]);
+                });
               },
             ),
-          ),
-          SizedBox(height: 16),
-          // SmoothPageIndicator
-          SmoothPageIndicator(
-            controller: _pageController,
-            count: imageUrls.length,
-            effect: ExpandingDotsEffect(
-              dotHeight: 8,
-              dotWidth: 8,
-              activeDotColor: Colors.blue,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class FavoritesPage extends StatelessWidget {
-  final List<String> favoriteLinks;
-
-  // Constructor to accept the list of favorite links
-  const FavoritesPage({super.key, required this.favoriteLinks});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Favorite Links'),
-      ),
-      body: ListView.builder(
-        itemCount: favoriteLinks.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(favoriteLinks[index]),
-            onTap: () {
-              print('Clicked on ${favoriteLinks[index]}');
-              // Add navigation or other functionality for the link if needed
+            onTap: () async {
+              final Uri url = Uri.parse(filteredLinks[index]["url"]);
+              if (await canLaunchUrl(url)) {
+                await launchUrl(url);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Could not open link")),
+                );
+              }
             },
-          );
-        },
-      ),
-    );
-  }
-}
-
-class CustomSearchDelegate extends SearchDelegate {
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: Icon(Icons.clear),
-        onPressed: () {
-          query = '';
-        },
-      ),
-    ];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.arrow_back),
-      onPressed: () {
-        close(context, null);
+          ),
+        );
       },
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    return Center(
-      child: Text('You searched for: $query'),
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    return Center(
-      child: Text('Suggestions for: $query'),
     );
   }
 }

@@ -77,13 +77,13 @@ class _MyAppState extends State<MyApp> {
         darkTheme: ThemeData.dark(), // Dark mode theme
         themeMode: _themeMode, // Dynamic theme switching
         debugShowCheckedModeBanner: false,
-        initialRoute: 'login',
+        initialRoute: 'home',
         routes: {
           'login': (context) => MyLogin(),
           'register': (context) => MyRegister(),
           'password': (context) => SetPassword(),
           'home':   (context) =>  BottomNavBar(),
-          'favourite': (context) => FavoritesPage(favoriteLinks: []),
+          'favourite': (context) => FavoritesPage(favoriteLinks: [],),
           'instruVideo': (context) => InstructionalVideosPage(),
           'HealthPage': (context) => HealthPage(),
           'BankingPage': (context) => BankingPage(),

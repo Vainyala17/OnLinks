@@ -16,7 +16,7 @@
 
     final List<Widget> _pages = [
       HomePage(onThemeModeChanged: (ThemeMode mode) {  },),
-      FavouritesPage(),
+      FavoritesPage(favoriteLinks: [],),
       ChatScreen(),
       InstructionalVideosPage(),
       UserProfilePage(),

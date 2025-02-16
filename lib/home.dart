@@ -4,17 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'app_drawer.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'CategoryOptions/BankingPage.dart';
-import 'CategoryOptions/EducationPage.dart';
-import 'CategoryOptions/GovernmentPage.dart';
-import 'CategoryOptions/HealthPage.dart';
-import 'PrivateInfo/favourites.dart';
-import 'PrivateInfo/instructionalVideos.dart';
-import 'PrivateInfo/privacy_policy.dart';
-import 'PrivateInfo/settingPage.dart';
-import 'PrivateInfo/userProfile.dart';
 
 class HomePage extends StatefulWidget {
   final void Function(ThemeMode mode) onThemeModeChanged;
