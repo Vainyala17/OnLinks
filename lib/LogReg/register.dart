@@ -89,7 +89,7 @@ class _MyRegisterState extends State<MyRegister> {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/logpic.jpg'),
+          image: AssetImage('assets/backg.jpg'),
           fit: BoxFit.cover,
         ),
       ),
@@ -104,7 +104,7 @@ class _MyRegisterState extends State<MyRegister> {
             Container(
               padding: EdgeInsets.only(left: 35, top: 0),
               child: Text(
-                'Create your account \n here....',
+                'Create your account \nhere....',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 35,
@@ -115,7 +115,7 @@ class _MyRegisterState extends State<MyRegister> {
             SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.20,
+                  top: MediaQuery.of(context).size.height * 0.25,
                   right: 35,
                   left: 35,
                 ),

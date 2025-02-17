@@ -16,7 +16,7 @@ class _SetPasswordState extends State<SetPassword> {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/logpic.jpg'),
+          image: AssetImage('assets/backg.jpg'),
           fit: BoxFit.cover,
         ),
       ),
