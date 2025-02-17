@@ -45,6 +45,7 @@ dependencies:
   flutter_email_sender: ^6.0.3
   smooth_page_indicator: ^1.0.0+2
   share_plus: ^10.1.2
+  speech_to_text: ^7.0.0
   firebase_storage: ^12.3.6
   flutter_background_service: ^5.1.0
   image_picker: ^0.8.8+1

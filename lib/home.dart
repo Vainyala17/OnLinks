@@ -131,39 +131,39 @@ class _HomePageState extends State<HomePage> {
       itemCount: categories.length,
       itemBuilder: (context, index) {
         return GestureDetector(
-            onTap: () {
-              // Navigate based on category name
-              switch (categories[index]['name']) {
-                case 'Education':
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => EducationPage()));
-                  break;
-                case 'Bank':
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => BankingPage()));
-                  break;
-                case 'Government':
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => GovernmentPage()));
-                  break;
-                case 'Healthcare':
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => HealthPage()));
-                  break;
-                case 'Certificates':
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => CertificatePage()));
-                  break;
-                default:
-                  break;
-              }
-            },
-            child: Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(categories[index]['image']!, height: 130),
-                  SizedBox(height: 8),
-                  Text(categories[index]['name']!, style: TextStyle(fontWeight: FontWeight.bold)),
-                ],
-              ),
+          onTap: () {
+            // Navigate based on category name
+            switch (categories[index]['name']) {
+              case 'Education':
+                Navigator.push(context, MaterialPageRoute(builder: (context) => EducationPage()));
+                break;
+              case 'Bank':
+                Navigator.push(context, MaterialPageRoute(builder: (context) => BankingPage()));
+                break;
+              case 'Government':
+                Navigator.push(context, MaterialPageRoute(builder: (context) => GovernmentPage()));
+                break;
+              case 'Healthcare':
+                Navigator.push(context, MaterialPageRoute(builder: (context) => HealthPage()));
+                break;
+              case 'Certificates':
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CertificatePage()));
+                break;
+              default:
+                break;
+            }
+          },
+          child: Card(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(categories[index]['image']!, height: 130),
+                SizedBox(height: 8),
+                Text(categories[index]['name']!, style: TextStyle(fontWeight: FontWeight.bold)),
+              ],
             ),
+          ),
         );
       },
     );
@@ -177,32 +177,42 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.grey[800],
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.menu, color: Colors.white),
+          icon: Icon(Icons.menu, color: Colors.black54),
           onPressed: () => _scaffoldKey.currentState?.openDrawer(),
         ),
         title: Container(
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
-          child: TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              hintText: "Search...",
-              prefixIcon: Icon(Icons.search, color: Colors.black54),
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 4,
+              offset: Offset(0, 2),
             ),
-          ),
+          ],
         ),
-      ),
-      drawer: AppDrawer(favoriteLinks: []),
-      body: SingleChildScrollView(
-        child: Column(
+        padding: EdgeInsets.symmetric(horizontal: 12),
+        child: Row(
           children: [
-            _buildImageSlider(),
-            SizedBox(height: 8),
-            _buildCategoryGrid(),
+            Icon(Icons.search, color: Colors.grey),
+            SizedBox(width: 8),
+            Expanded(
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: "Search...",
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.mic, color: Colors.grey),
+              onPressed: () {
+                // Implement voice search function here
+              },
+            ),
           ],
         ),
       ),
-    );
+    ),);
   }
 }
