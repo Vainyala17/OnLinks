@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:speech_to_text/speech_to_text.dart'as stt;
 import 'CategoryOptions/BankingPage.dart';
 import 'CategoryOptions/CertificatesPage.dart';
 import 'CategoryOptions/EducationPage.dart';
@@ -22,6 +23,8 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _searchController = TextEditingController();
   int _currentIndex = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  stt.SpeechToText _speech = stt.SpeechToText();
+  bool _isListening = false;
 
   final List<Map<String, String>> categories = [
     {'name': 'Education', 'image': 'assets/images/education.png'},
@@ -31,6 +34,7 @@ class _HomePageState extends State<HomePage> {
     {'name': 'Certificates', 'image': 'assets/images/certificate.png'},
     {'name': 'Healthcare', 'image': 'assets/images/health.png'},
   ];
+
 
   final List<String> imageUrls = [
     'https://egov.eletsonline.com/wp-content/uploads/2016/04/MahaLogo-1.png',
@@ -44,7 +48,15 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _initializeSpeech();
     _setupFCM();
+  }
+
+  void _initializeSpeech() async {
+    bool available = await _speech.initialize();
+    if (!available) {
+      print("Speech recognition not available");
+    }
   }
 
   void _setupFCM() async {
@@ -56,7 +68,8 @@ class _HomePageState extends State<HomePage> {
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         if (message.notification != null) {
-          _showNotificationDialog(message.notification!.title, message.notification!.body);
+          _showNotificationDialog(
+              message.notification!.title, message.notification!.body);
         }
       });
     }
@@ -65,18 +78,53 @@ class _HomePageState extends State<HomePage> {
   void _showNotificationDialog(String? title, String? body) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title ?? 'Notification'),
-        content: Text(body ?? 'No content'),
-        actions: [TextButton(onPressed: () => Navigator.pop(context), child: Text('OK'))],
-      ),
+      builder: (context) =>
+          AlertDialog(
+            title: Text(title ?? 'Notification'),
+            content: Text(body ?? 'No content'),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.pop(context), child: Text('OK'))
+            ],
+          ),
     );
+  }
+
+  void _startListening() async {
+    if (!_isListening) {
+      bool available = await _speech.initialize();
+      if (available) {
+        setState(() => _isListening = true);
+        _speech.listen(
+          onResult: (result) {
+            setState(() {
+              _searchController.text = result.recognizedWords;
+            });
+          },
+          listenFor: Duration(seconds: 5), // Stops after 5 seconds
+        );
+      }
+    }
+  }
+
+  void _stopListening() {
+    if (_isListening) {
+      _speech.stop();
+      setState(() => _isListening = false);
+      _performSearch(_searchController.text); // Perform search
+    }
+  }
+
+  void _performSearch(String query) {
+    // Implement your search logic here
+    print("Searching for: $query");
   }
 
   @override
   void dispose() {
     _pageController.dispose();
     _searchController.dispose();
+    _speech.stop();
     super.dispose();
   }
 
@@ -101,7 +149,8 @@ class _HomePageState extends State<HomePage> {
                 url,
                 fit: BoxFit.contain,
                 width: double.infinity,
-                errorBuilder: (context, error, stackTrace) => Image.asset('assets/images/placeholder.png', height: 200),
+                errorBuilder: (context, error, stackTrace) =>
+                    Image.asset('assets/images/placeholder.png', height: 200),
               ),
             );
           }).toList(),
@@ -111,7 +160,10 @@ class _HomePageState extends State<HomePage> {
           activeIndex: _currentIndex,
           count: imageUrls.length,
           effect: ExpandingDotsEffect(
-            dotHeight: 8, dotWidth: 8, activeDotColor: Colors.white, dotColor: Colors.grey.shade400,
+            dotHeight: 8,
+            dotWidth: 8,
+            activeDotColor: Colors.white,
+            dotColor: Colors.grey.shade400,
           ),
         ),
       ],
@@ -135,32 +187,39 @@ class _HomePageState extends State<HomePage> {
             // Navigate based on category name
             switch (categories[index]['name']) {
               case 'Education':
-                Navigator.push(context, MaterialPageRoute(builder: (context) => EducationPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => EducationPage()));
                 break;
               case 'Bank':
-                Navigator.push(context, MaterialPageRoute(builder: (context) => BankingPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => BankingPage()));
                 break;
               case 'Government':
-                Navigator.push(context, MaterialPageRoute(builder: (context) => GovernmentPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => GovernmentPage()));
                 break;
               case 'Healthcare':
-                Navigator.push(context, MaterialPageRoute(builder: (context) => HealthPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HealthPage()));
                 break;
               case 'Certificates':
-                Navigator.push(context, MaterialPageRoute(builder: (context) => CertificatePage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => CertificatePage()));
                 break;
               default:
                 break;
             }
           },
           child: Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(categories[index]['image']!, height: 130),
                 SizedBox(height: 8),
-                Text(categories[index]['name']!, style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(categories[index]['name']!,
+                    style: TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
           ),
@@ -174,45 +233,60 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        backgroundColor: Colors.grey[800],
+        backgroundColor: Colors.blue,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.menu, color: Colors.black54),
           onPressed: () => _scaffoldKey.currentState?.openDrawer(),
         ),
         title: Container(
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(30),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 4,
-              offset: Offset(0, 2),
-            ),
-          ],
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 12),
-        child: Row(
-          children: [
-            Icon(Icons.search, color: Colors.grey),
-            SizedBox(width: 8),
-            Expanded(
-              child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: "Search...",
-                  border: InputBorder.none,
+          decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          child: Row(
+            children: [
+              Icon(Icons.search, color: Colors.grey),
+              SizedBox(width: 8),
+              Expanded(
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: "Search...",
+                    border: InputBorder.none,
+                  ),
                 ),
               ),
-            ),
-            IconButton(
-              icon: Icon(Icons.mic, color: Colors.grey),
-              onPressed: () {
-                // Implement voice search function here
-              },
-            ),
-          ],
+              IconButton(
+                icon: Icon(_isListening ? Icons.mic_off : Icons.mic,
+                    color: Colors.grey),
+                onPressed: () {
+                  if (_isListening) {
+                    _stopListening();
+                  } else {
+                    _startListening();
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
-    ),);
+      drawer: AppDrawer(favoriteLinks: [],),
+      body: Column(
+        children: [
+          _buildImageSlider(), // Call the image slider function
+          SizedBox(height: 20),
+          _buildCategoryGrid(), // Call the category grid function
+        ],
+      ),
+    );
   }
 }

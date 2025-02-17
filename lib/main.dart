@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_project/services/firebase_messaging_service.dart';
 import 'CategoryOptions/BankingPage.dart';
 import 'CategoryOptions/EducationPage.dart';
@@ -15,7 +15,6 @@ import 'PrivateInfo/instructionalVideos.dart';
 import 'PrivateInfo/search_controller.dart';
 import 'PrivateInfo/theme_preference.dart';
 import 'bottom_nav_bar.dart';
-import 'home.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -29,6 +28,11 @@ void main() async {
 
   try {
     await Firebase.initializeApp();
+    var initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
+
+    var flutterLocalNotificationsPlugin;
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
     await FirebaseAppCheck.instance.activate(
       webProvider: ReCaptchaV3Provider('your-site-key'),
     );

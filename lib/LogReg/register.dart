@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class MyRegister extends StatefulWidget {
   const MyRegister({super.key});
@@ -12,6 +13,7 @@ class MyRegister extends StatefulWidget {
 class _MyRegisterState extends State<MyRegister> {
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
@@ -19,6 +21,13 @@ class _MyRegisterState extends State<MyRegister> {
   bool _obscurePassword = true; // State for password visibility
   bool _obscureConfirmPassword = true; // State for confirm password visibility
 
+  @override
+  void initState() {
+    super.initState();
+    var initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
   Future<void> _register() async {
     final email = _emailController.text;
     final password = _passwordController.text;
@@ -68,7 +77,7 @@ class _MyRegisterState extends State<MyRegister> {
           'createdAt': FieldValue.serverTimestamp(),
         });
       }
-
+      _sendWelcomeNotification();
       // Navigate to home page or do something else
       Navigator.pushNamed(context, 'home');
     } on FirebaseAuthException catch (e) {
@@ -82,6 +91,22 @@ class _MyRegisterState extends State<MyRegister> {
         });
       }
     }
+  }
+  void _sendWelcomeNotification() async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'welcome_channel_id',
+      'Welcome Notifications',
+      importance: Importance.high,
+      priority: Priority.high,
+      showWhen: false,
+    );
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      'Welcome to On-Links!',
+      'Thank you for joining. Start exploring now!',
+      platformChannelSpecifics,
+    );
   }
 
   @override
