@@ -87,7 +87,7 @@ class _MyAppState extends State<MyApp> {
             darkTheme: ThemeData.dark(),
             themeMode: _themeMode,
             debugShowCheckedModeBanner: false,
-            initialRoute: 'login',
+            initialRoute: 'home',
             routes: {
               'login': (context) => MyLogin(),
               'register': (context) => MyRegister(),

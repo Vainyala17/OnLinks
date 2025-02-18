@@ -1,7 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:speech_to_text/speech_to_text.dart'as stt;
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'CategoryOptions/BankingPage.dart';
 import 'CategoryOptions/CertificatesPage.dart';
 import 'CategoryOptions/EducationPage.dart';
@@ -34,7 +34,6 @@ class _HomePageState extends State<HomePage> {
     {'name': 'Certificates', 'image': 'assets/images/certificate.png'},
     {'name': 'Healthcare', 'image': 'assets/images/health.png'},
   ];
-
 
   final List<String> imageUrls = [
     'https://egov.eletsonline.com/wp-content/uploads/2016/04/MahaLogo-1.png',
@@ -101,7 +100,7 @@ class _HomePageState extends State<HomePage> {
               _searchController.text = result.recognizedWords;
             });
           },
-          listenFor: Duration(seconds: 5), // Stops after 5 seconds
+          listenFor: Duration(seconds: 5),
         );
       }
     }
@@ -111,12 +110,11 @@ class _HomePageState extends State<HomePage> {
     if (_isListening) {
       _speech.stop();
       setState(() => _isListening = false);
-      _performSearch(_searchController.text); // Perform search
+      _performSearch(_searchController.text);
     }
   }
 
   void _performSearch(String query) {
-    // Implement your search logic here
     print("Searching for: $query");
   }
 
@@ -184,13 +182,12 @@ class _HomePageState extends State<HomePage> {
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () {
-            // Navigate based on category name
             switch (categories[index]['name']) {
               case 'Education':
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => EducationPage()));
                 break;
-              case 'Bank':
+              case 'Banking':
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => BankingPage()));
                 break;
@@ -266,6 +263,7 @@ class _HomePageState extends State<HomePage> {
                     hintText: "Search...",
                     border: InputBorder.none,
                   ),
+                  onSubmitted: (query) => _performSearch(query),
                 ),
               ),
               IconButton(
@@ -289,7 +287,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             _buildImageSlider(),
             SizedBox(height: 20),
-            Expanded(child: _buildCategoryGrid()),
+            _buildCategoryGrid()
           ],
         ),
       ),
