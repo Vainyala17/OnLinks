@@ -42,6 +42,7 @@ class _MyLoginState extends State<MyLogin> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -54,14 +55,14 @@ class _MyLoginState extends State<MyLogin> {
         body: Stack(
           children: [
             Container(
-              padding: EdgeInsets.only(left: 35, top: 80),
+              padding: EdgeInsets.only(left: screenWidth * 0.1, top: 80),
               child: Text(
                 'Welcome back \nto OnLinks!',
                 style: TextStyle(
                   fontFamily: "lato",
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
-                  fontSize: 43,
+                  fontSize: screenWidth * 0.08,
                 ),
               ),
             ),
@@ -69,8 +70,8 @@ class _MyLoginState extends State<MyLogin> {
               child: Container(
                 padding: EdgeInsets.only(
                   top: MediaQuery.of(context).size.height * 0.4,
-                  right: 35,
-                  left: 35,
+                  right: screenWidth * 0.1,
+                  left: screenWidth * 0.1,
                 ),
                 child: Form(
                   key: _formKey, // Form widget

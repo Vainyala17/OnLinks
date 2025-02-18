@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_project/services/firebase_messaging_service.dart';
 import 'CategoryOptions/BankingPage.dart';
@@ -74,30 +75,37 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => CustomSearchController(),
-      child: MaterialApp(
-        theme: ThemeData.light(), // Light mode theme
-        darkTheme: ThemeData.dark(), // Dark mode theme
-        themeMode: _themeMode, // Dynamic theme switching
-        debugShowCheckedModeBanner: false,
-        initialRoute: 'login',
-        routes: {
-          'login': (context) => MyLogin(),
-          'register': (context) => MyRegister(),
-          'password': (context) => SetPassword(),
-          'home':   (context) =>  BottomNavBar(),
-          'favourite': (context) => FavoritesPage(favoriteLinks: [],),
-          'instruVideo': (context) => InstructionalVideosPage(),
-          'HealthPage': (context) => HealthPage(),
-          'BankingPage': (context) => BankingPage(),
-          'GovernmentPage': (context) => GovernmentPage(),
-          'EducationPage': (context) => EducationPage(),
-        },
-        home: AppInitializer(
-          onThemeModeChanged: _updateThemeMode,
-        ),
-      ),
+    return ScreenUtilInit(
+      designSize: Size(360, 690), // Base design size
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return ChangeNotifierProvider(
+          create: (_) => CustomSearchController(),
+          child: MaterialApp(
+            theme: ThemeData.light(),
+            darkTheme: ThemeData.dark(),
+            themeMode: _themeMode,
+            debugShowCheckedModeBanner: false,
+            initialRoute: 'login',
+            routes: {
+              'login': (context) => MyLogin(),
+              'register': (context) => MyRegister(),
+              'password': (context) => SetPassword(),
+              'home': (context) => BottomNavBar(),
+              'favourite': (context) => FavoritesPage(favoriteLinks: [],),
+              'instruVideo': (context) => InstructionalVideosPage(),
+              'HealthPage': (context) => HealthPage(),
+              'BankingPage': (context) => BankingPage(),
+              'GovernmentPage': (context) => GovernmentPage(),
+              'EducationPage': (context) => EducationPage(),
+            },
+            home: AppInitializer(
+              onThemeModeChanged: _updateThemeMode,
+            ),
+          ),
+        );
+      },
     );
   }
 }

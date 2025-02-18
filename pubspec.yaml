@@ -40,6 +40,7 @@ dependencies:
   firebase_messaging: ^15.2.0
   firebase_app_check: ^0.3.1+7
   url_launcher: ^6.3.1
+  flutter_screenutil: ^5.9.3
   carousel_slider: ^5.0.0
   cupertino_icons: ^1.0.6
   flutter_email_sender: ^6.0.3

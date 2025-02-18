@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> {
       children: [
         CarouselSlider(
           options: CarouselOptions(
-            height: 200,
+            height: MediaQuery.of(context).size.height * 0.3,
             autoPlay: true,
             autoPlayInterval: Duration(seconds: 3),
             enlargeCenterPage: true,
@@ -205,6 +205,10 @@ class _HomePageState extends State<HomePage> {
               case 'Certificates':
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => CertificatePage()));
+                break;
+              case 'Healthcare':
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HealthPage()));
                 break;
               default:
                 break;
@@ -280,12 +284,14 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       drawer: AppDrawer(favoriteLinks: [],),
-      body: Column(
-        children: [
-          _buildImageSlider(), // Call the image slider function
-          SizedBox(height: 20),
-          _buildCategoryGrid(), // Call the category grid function
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildImageSlider(),
+            SizedBox(height: 20),
+            Expanded(child: _buildCategoryGrid()),
+          ],
+        ),
       ),
     );
   }

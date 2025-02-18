@@ -132,7 +132,7 @@ class _MyRegisterState extends State<MyRegister> {
                 'Create your account \nhere....',
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 35,
+                  fontSize: 40,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -140,7 +140,7 @@ class _MyRegisterState extends State<MyRegister> {
             SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.25,
+                  top: MediaQuery.of(context).size.height * 0.30,
                   right: 35,
                   left: 35,
                 ),
