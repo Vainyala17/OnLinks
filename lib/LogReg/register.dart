@@ -17,6 +17,7 @@ class _MyRegisterState extends State<MyRegister> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   String _message = '';
   bool _obscurePassword = true; // State for password visibility
   bool _obscureConfirmPassword = true; // State for confirm password visibility
@@ -108,214 +109,136 @@ class _MyRegisterState extends State<MyRegister> {
       platformChannelSpecifics,
     );
   }
+  void _scrollToField() {
+    Future.delayed(Duration(milliseconds: 200), () {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/backg.jpg'),
-          fit: BoxFit.cover,
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/backg.jpg'), // Background image
+            fit: BoxFit.cover,
+          ),
         ),
-      ),
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-        backgroundColor: Colors.transparent,
-        body: Stack(
-          children: [
-            Container(
-              padding: EdgeInsets.only(left: 35, top: 0),
-              child: Text(
-                'Create your account \nhere....',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
+        child: Center(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(35),
+            child: Column(
+              children: [
+                AppBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
                 ),
+                Text(
+                  'Create your account',
+                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                ),
+              SizedBox(height: 20),
+              TextField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                ),
+                onTap: _scrollToField,
               ),
-            ),
-            SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.30,
-                  right: 35,
-                  left: 35,
+              SizedBox(height: 20),
+              TextField(
+                controller: _passwordController,
+                obscureText: _obscurePassword,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+                    onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                  ),
                 ),
-                child: Column(
+                onTap: _scrollToField,
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: _confirmPasswordController,
+                obscureText: _obscureConfirmPassword,
+                decoration: InputDecoration(
+                  labelText: 'Confirm Password',
+                  border: OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: Icon(_obscureConfirmPassword ? Icons.visibility_off : Icons.visibility),
+                    onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+                  ),
+                ),
+                onTap: _scrollToField,
+              ),
+              SizedBox(height: 40),
+              SizedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: const Text(
-                        ' Email :',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    TextField(
-                      controller: _emailController,
-                      style: TextStyle(color: Colors.black),
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        filled: true,
-                        hintText: 'Enter Email',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 25),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: const Text(
-                        ' Password :',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    TextField(
-                      controller: _passwordController,
-                      style: TextStyle(color: Colors.black),
-                      obscureText: _obscurePassword,
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        filled: true,
-                        hintText: 'Enter Password',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _obscurePassword = !_obscurePassword;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 25),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: const Text(
-                        ' Confirm Password :',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    TextField(
-                      controller: _confirmPasswordController,
-                      style: TextStyle(color: Colors.black),
-                      obscureText: _obscureConfirmPassword,
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        filled: true,
-                        hintText: 'Enter Confirm Password',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _obscureConfirmPassword = !_obscureConfirmPassword;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 25),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: _register,
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: 11),
-                          backgroundColor: Color(0xFF2196F3),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.app_registration,
-                              size: 28,
-                              color: Colors.black,
-                            ),
-                            SizedBox(width: 8),
-                            Text(
-                              'Register',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10), // Add space for the message
+                    SizedBox(width: 8),
                     Text(
-                      _message,
-                      style: TextStyle(color: Colors.red, fontSize: 16), // Display messages
-                    ),
-                    SizedBox(height: 25),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, 'login');
-                          },
-                          child: RichText(
-                            text: TextSpan(
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Color(0xff4c505b),
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: 'Already have an account ? \n ',
-                                  style: TextStyle(
-                                    decoration: TextDecoration.none,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: 'Login',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    decoration: TextDecoration.underline,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+                      'Register',
+                      style: TextStyle(
+                        fontFamily: "lato",
+                        color: Colors.black,
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
               ),
+              SizedBox(height: 10),
+              Text(
+                _message,
+                style: TextStyle(color: Colors.red, fontSize: 16),
+              ),
+              SizedBox(height: 25),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, 'login');
+                    },
+                    child: RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Color(0xff4c505b),
+                        ),
+                        children: [
+                          TextSpan(
+                            text: 'Already have an account ? \n ',
+                            style: TextStyle(
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                          TextSpan(
+                            text: 'Login',
+                            style: TextStyle(
+                              color: Colors.black,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -56,7 +56,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               controller: _currentPasswordController,
               obscureText: true,
               decoration: const InputDecoration(
-                labelText: "Current Password",
+                labelText: "Old Password",
                 border: OutlineInputBorder(),
               ),
             ),
@@ -66,6 +66,15 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               obscureText: true,
               decoration: const InputDecoration(
                 labelText: "New Password",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 15),
+            TextField(
+              controller: _newPasswordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: "Confirm New Password",
                 border: OutlineInputBorder(),
               ),
             ),

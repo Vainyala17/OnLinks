@@ -7,6 +7,7 @@ import 'package:flutter_project/PrivateInfo/FAQPage.dart';
 import 'package:flutter_project/PrivateInfo/settingPage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'EditProfilePage.dart';
+import 'package:flutter_project/LogReg/Login.dart';  // Adjust the path based on your project structure
 import 'ChangePasswordPage.dart';
 
 class UserProfilePage extends StatefulWidget {
@@ -45,6 +46,40 @@ class _UserProfilePageState extends State<UserProfilePage> {
       );
     }
   }
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm Logout"),
+          content: const Text("Are you sure you want to log out?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context), // Close dialog (No action)
+              child: const Text("No"),
+            ),
+            TextButton(
+              onPressed: () async {
+                // Logout from Firebase
+                await FirebaseAuth.instance.signOut();
+
+                // Close dialog
+                Navigator.pop(context);
+
+                // Navigate to Login Page & Remove all previous pages
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MyLogin()),
+                );
+              },
+              child: const Text("Yes"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -91,19 +126,35 @@ class _UserProfilePageState extends State<UserProfilePage> {
               ],
             ),
             const SizedBox(height: 20),
-            _buildSectionTitle("General"),
-            _buildMenuItem(Icons.person, "Edit Profile", const EditProfilePage()),
-            _buildMenuItem(Icons.lock, "Change Password", const ChangePasswordPage()),
-            _buildMenuItem(Icons.settings, "Settings", const SettingsPage()),
-            _buildMenuItem(Icons.credit_card, "Add Card", PlaceholderPage("Add Card")),
+            _buildMenuItem(Icons.person, "Edit Profile", page: const EditProfilePage()),
+            _buildMenuItem(Icons.lock, "Change Password", page: const ChangePasswordPage()),
+            _buildMenuItem(Icons.settings, "Settings", page: const SettingsPage()),
+            _buildMenuItem(Icons.help, "FAQ", page: const FAQPage()),
+
 
             const SizedBox(height: 20),
             _buildSectionTitle("Preferences"),
             _buildToggleMenuItem(Icons.notifications, "Notification"),
-            _buildMenuItem(Icons.help, "FAQ", const FAQPage()),
-            _buildMenuItem(Icons.logout, "Log Out", PlaceholderPage("Log Out")),
+            _buildMenuItem(Icons.logout, "Log Out", onTap: () {
+              _showLogoutDialog(context);
+            }),
           ],
         ),
+      ),
+    );
+  }
+  Widget _buildMenuItem(IconData icon, String text, {VoidCallback? onTap, Widget? page}) {
+    return Card(
+      child: ListTile(
+        leading: Icon(icon, color: Colors.black),
+        title: Text(text, style: const TextStyle(fontSize: 16)),
+        onTap: () {
+          if (onTap != null) {
+            onTap(); // Execute function if provided (e.g., logout)
+          } else if (page != null) {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => page)); // Navigate if page is provided
+          }
+        },
       ),
     );
   }
@@ -112,16 +163,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-    );
-  }
-
-  Widget _buildMenuItem(IconData icon, String text, Widget page) {
-    return Card(
-      child: ListTile(
-        leading: Icon(icon, color: Colors.black),
-        title: Text(text, style: const TextStyle(fontSize: 16)),
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => page)),
-      ),
     );
   }
 

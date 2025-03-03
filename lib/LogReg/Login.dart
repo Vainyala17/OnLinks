@@ -169,11 +169,6 @@ class _MyLoginState extends State<MyLogin> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
-                                Icons.login,
-                                size: 27,
-                                color: Colors.black,
-                              ),
                               SizedBox(width: 8),
                               Text(
                                 'Login',
