@@ -1,14 +1,11 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_project/PrivateInfo/privacy_policy.dart';
-import 'package:flutter_project/PrivateInfo/settingPage.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'EditProfilePage.dart';
-// Import your Settings Page here
+import 'ChangePasswordPage.dart';
 
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({super.key});
@@ -19,13 +16,32 @@ class UserProfilePage extends StatefulWidget {
 
 class _UserProfilePageState extends State<UserProfilePage> {
   File? _profilePicture;
-  final user = FirebaseAuth.instance.currentUser;
+  User? user = FirebaseAuth.instance.currentUser;
 
-  void _navigateToPage(Widget page) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => page),
-    );
+  Future<void> pickAndUploadImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile == null) return;
+
+    File imageFile = File(pickedFile.path);
+
+    try {
+      final ref = FirebaseStorage.instance.ref().child("profile_pics/${user!.uid}.jpg");
+      await ref.putFile(imageFile);
+      String downloadUrl = await ref.getDownloadURL();
+
+      await user?.updatePhotoURL(downloadUrl);
+      await FirebaseAuth.instance.currentUser?.reload();
+
+      setState(() {
+        user = FirebaseAuth.instance.currentUser;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to upload image: $e")),
+      );
+    }
   }
 
   @override
@@ -33,78 +49,98 @@ class _UserProfilePageState extends State<UserProfilePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
+        title: const Text("Profile Setting", style: TextStyle(color: Colors.black)),
+        centerTitle: true,
       ),
-      body: Center(
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(30),
-          ),
-          width: MediaQuery.of(context).size.width * 0.85,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircleAvatar(
-                radius: 50,
-                backgroundImage: _profilePicture != null
-                    ? FileImage(_profilePicture!)
-                    : (user?.photoURL != null ? NetworkImage(user!.photoURL!) : null),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                user?.displayName ?? "User Name",
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-              ),
-              Text(
-                "@${user?.email?.split('@')[0] ?? 'username'}",
-                style: const TextStyle(color: Colors.white),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 35,
+                  backgroundImage: _profilePicture != null
+                      ? FileImage(_profilePicture!)
+                      : (user?.photoURL != null ? NetworkImage(user!.photoURL!) : const AssetImage("assets/default_profile.png")) as ImageProvider,
+                  child: GestureDetector(
+                    onTap: pickAndUploadImage,
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: CircleAvatar(
+                        radius: 12,
+                        backgroundColor: Colors.white,
+                        child: Icon(Icons.camera_alt, size: 16, color: Colors.black),
+                      ),
+                    ),
+                  ),
                 ),
-                onPressed: () {
-                  _navigateToPage(const EditProfilePage());
-                },
-                child: const Text("Edit"),
-              ),
-              const SizedBox(height: 20),
-              const Divider(color: Colors.white),
-              _buildMenuItem(Icons.settings, "Setting", const SettingsPage()), // Navigate to Settings
-              _buildMenuItem(Icons.lock, "Privacy Policy", PrivacyPolicyPage()),
-              _buildMenuItem(Icons.group, "New Group", PlaceholderPage("New Group Page")),
-              _buildMenuItem(Icons.support, "Support", PlaceholderPage("Support Page")),
-              _buildMenuItem(Icons.share, "Share", PlaceholderPage("Share Page")),
-              _buildMenuItem(Icons.info, "About Us", PlaceholderPage("About Us Page")),
-            ],
-          ),
+                const SizedBox(width: 15),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(user?.displayName ?? "User Name", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    Text(user?.email ?? "user@example.com", style: const TextStyle(color: Colors.grey)),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            _buildSectionTitle("General"),
+            _buildMenuItem(Icons.person, "Edit Profile", const EditProfilePage()),
+            _buildMenuItem(Icons.lock, "Change Password", const ChangePasswordPage()),
+            _buildMenuItem(Icons.info, "Terms of Use", PlaceholderPage("Terms of Use")),
+            _buildMenuItem(Icons.credit_card, "Add Card", PlaceholderPage("Add Card")),
+
+            const SizedBox(height: 20),
+            _buildSectionTitle("Preferences"),
+            _buildToggleMenuItem(Icons.notifications, "Notification"),
+            _buildMenuItem(Icons.help, "FAQ", PlaceholderPage("FAQ")),
+            _buildMenuItem(Icons.logout, "Log Out", PlaceholderPage("Log Out")),
+          ],
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: "Account"),
+          BottomNavigationBarItem(icon: Icon(Icons.work), label: "Jobs"),
+          BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet), label: "Balance"),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
     );
   }
 
   Widget _buildMenuItem(IconData icon, String text, Widget page) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.white),
-      title: Text(text, style: const TextStyle(fontSize: 16, color: Colors.white)),
-      onTap: () {
-        _navigateToPage(page);
-      },
+    return Card(
+      child: ListTile(
+        leading: Icon(icon, color: Colors.black),
+        title: Text(text, style: const TextStyle(fontSize: 16)),
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => page)),
+      ),
+    );
+  }
+
+  Widget _buildToggleMenuItem(IconData icon, String text) {
+    return Card(
+      child: ListTile(
+        leading: Icon(icon, color: Colors.black),
+        title: Text(text, style: const TextStyle(fontSize: 16)),
+        trailing: Switch(value: true, onChanged: (bool value) {}),
+      ),
     );
   }
 }
 
-// Placeholder page for navigation (Replace with actual pages)
 class PlaceholderPage extends StatelessWidget {
   final String title;
   const PlaceholderPage(this.title, {super.key});
