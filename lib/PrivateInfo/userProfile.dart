@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_project/PrivateInfo/FAQPage.dart';
+import 'package:flutter_project/PrivateInfo/settingPage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'EditProfilePage.dart';
 import 'ChangePasswordPage.dart';
@@ -92,23 +94,16 @@ class _UserProfilePageState extends State<UserProfilePage> {
             _buildSectionTitle("General"),
             _buildMenuItem(Icons.person, "Edit Profile", const EditProfilePage()),
             _buildMenuItem(Icons.lock, "Change Password", const ChangePasswordPage()),
-            _buildMenuItem(Icons.info, "Terms of Use", PlaceholderPage("Terms of Use")),
+            _buildMenuItem(Icons.settings, "Settings", const SettingsPage()),
             _buildMenuItem(Icons.credit_card, "Add Card", PlaceholderPage("Add Card")),
 
             const SizedBox(height: 20),
             _buildSectionTitle("Preferences"),
             _buildToggleMenuItem(Icons.notifications, "Notification"),
-            _buildMenuItem(Icons.help, "FAQ", PlaceholderPage("FAQ")),
+            _buildMenuItem(Icons.help, "FAQ", const FAQPage()),
             _buildMenuItem(Icons.logout, "Log Out", PlaceholderPage("Log Out")),
           ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: "Account"),
-          BottomNavigationBarItem(icon: Icon(Icons.work), label: "Jobs"),
-          BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet), label: "Balance"),
-        ],
       ),
     );
   }
