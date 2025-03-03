@@ -15,6 +15,7 @@ import 'PrivateInfo/favourites.dart';
 import 'PrivateInfo/instructionalVideos.dart';
 import 'PrivateInfo/search_controller.dart';
 import 'PrivateInfo/theme_preference.dart';
+import 'WebViewPage.dart';
 import 'bottom_nav_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -72,7 +73,6 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -99,6 +99,7 @@ class _MyAppState extends State<MyApp> {
               'BankingPage': (context) => BankingPage(),
               'GovernmentPage': (context) => GovernmentPage(),
               'EducationPage': (context) => EducationPage(),
+              'webviewPage': (context) => WebViewPage(url: '',),
             },
             home: AppInitializer(
               onThemeModeChanged: _updateThemeMode,

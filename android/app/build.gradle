@@ -1,10 +1,7 @@
 plugins {
     id "com.android.application"
-    // START: FlutterFire Configuration
-    id 'com.google.gms.google-services'
-    // END: FlutterFire Configuration
+    id "com.google.gms.google-services" // Firebase services
     id "kotlin-android"
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
 }
 
@@ -16,62 +13,53 @@ if (localPropertiesFile.exists()) {
     }
 }
 
-def flutterVersionCode = localProperties.getProperty("flutter.versionCode")
-if (flutterVersionCode == null) {
-    flutterVersionCode = "1"
-}
-
-def flutterVersionName = localProperties.getProperty("flutter.versionName")
-if (flutterVersionName == null) {
-    flutterVersionName = "1.0"
-}
+def flutterVersionCode = localProperties.getProperty("flutter.versionCode", "1").toInteger()
+def flutterVersionName = localProperties.getProperty("flutter.versionName", "1.0")
 
 android {
-    namespace = "com.example.onlinks"
-    compileSdk = 34
+    namespace "com.example.onlinks"
+    compileSdk = 35  // Change to 35 only if your Flutter SDK supports it
 
     defaultConfig {
-        applicationId  "com.example.onlinks"
-        //minSdk = flutter.minSdkVersion
+        applicationId "com.example.onlinks"
         minSdk = 24
-        targetSdk = 34
-        versionCode = flutterVersionCode.toInteger()
+        targetSdk = 35  // Change to 35 only if supported
+        versionCode = flutterVersionCode
         versionName = flutterVersionName
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.debug
+            minifyEnabled false
+            shrinkResources false
         }
     }
 
     compileOptions {
         coreLibraryDesugaringEnabled true
-        sourceCompatibility  JavaVersion.VERSION_17
-        targetCompatibility     JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = "17"
     }
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.9.0'
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.0" // Add this line
-    // Add any other dependencies here
-    implementation 'com.google.firebase:firebase-messaging:15.2.0'
-    // Import the BoM for the Firebase platform
-        implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
-        // Add the dependency for the Firebase Authentication library
-        // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation("com.google.firebase:firebase-auth:22.0.0")
+    implementation 'androidx.core:core-ktx:1.15.0'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:2.0.21"
+
+    // Firebase dependencies
+    implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-messaging")
 }
 
 configurations.all {
     resolutionStrategy {
-        force 'org.jetbrains.kotlin:kotlin-stdlib:1.9.0'
-        force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.0'
+        force 'org.jetbrains.kotlin:kotlin-stdlib:2.0.21'
     }
 }
 
