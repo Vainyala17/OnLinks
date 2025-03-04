@@ -10,8 +10,9 @@ class MyLogin extends StatefulWidget {
 
 class _MyLoginState extends State<MyLogin> {
   final _formKey = GlobalKey<FormState>(); // Form key to validate
-  final TextEditingController emailController = TextEditingController(); // Controller for email
-  final TextEditingController passwordController = TextEditingController(); // Controller for password
+  final TextEditingController _emailController = TextEditingController(); // Controller for email
+  final TextEditingController _passwordController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();// Controller for password
   bool _isPasswordVisible = false; // State variable for password visibility
   String _message = ''; // Message to show login errors
 
@@ -21,8 +22,8 @@ class _MyLoginState extends State<MyLogin> {
       try {
         // Attempt to log in the user with email and password
         UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text,
-          password: passwordController.text,
+          email: _emailController.text,
+          password: _passwordController.text,
         );
 
         // Navigate to home if login is successful
@@ -39,7 +40,15 @@ class _MyLoginState extends State<MyLogin> {
       );
     }
   }
-
+  void _scrollToField() {
+    Future.delayed(Duration(milliseconds: 200), () {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -77,30 +86,12 @@ class _MyLoginState extends State<MyLogin> {
                   key: _formKey, // Form widget
                   child: Column(
                     children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: const Text(
-                          ' Email :',
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontFamily: "lato",
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
+                      const SizedBox(height: 20),
                       TextFormField(
-                        controller: emailController,
-                        style: TextStyle(color: Colors.black),
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          hintText: 'Enter Email',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                        controller: _emailController,
+                        decoration: const InputDecoration(labelText: 'Email', border: OutlineInputBorder()
                         ),
+                        onTap: _scrollToField,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your email';
@@ -113,43 +104,19 @@ class _MyLoginState extends State<MyLogin> {
                           return null; // Additional email validation can be added here
                         },
                       ),
-                      SizedBox(height: 30),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: const Text(
-                          ' Password :',
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontFamily: "lato",
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
+                      const SizedBox(height: 20),
                       TextFormField(
-                        controller: passwordController,
-                        style: TextStyle(color: Colors.black),
-                        obscureText: !_isPasswordVisible, // Toggle password visibility
+                        controller: _passwordController,
+                        obscureText: !_isPasswordVisible,
                         decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          hintText: 'Enter Password',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                          labelText: 'Password',
+                          border: const OutlineInputBorder(),
                           suffixIcon: IconButton(
-                            icon: Icon(
-                              _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                              color: Colors.grey,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _isPasswordVisible = !_isPasswordVisible; // Toggle the state
-                              });
-                            },
+                            icon: Icon(!_isPasswordVisible ? Icons.visibility_off : Icons.visibility),
+                            onPressed: () => setState(() => _isPasswordVisible =  !_isPasswordVisible),
                           ),
                         ),
+                        onTap: _scrollToField,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your password';

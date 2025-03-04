@@ -10,7 +10,16 @@ class SetPassword extends StatefulWidget {
 
 class _SetPasswordState extends State<SetPassword> {
   final TextEditingController _emailController = TextEditingController();
-
+  final ScrollController _scrollController = ScrollController();// Controller for password
+  void _scrollToField() {
+    Future.delayed(Duration(milliseconds: 200), () {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -48,28 +57,12 @@ class _SetPasswordState extends State<SetPassword> {
                 ),
                 child: Column(
                   children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: const Text(
-                        ' Email :',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    TextField(
+                    const SizedBox(height: 20),
+                    TextFormField(
                       controller: _emailController,
-                      style: TextStyle(color: Colors.black),
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        filled: true,
-                        hintText: 'Enter Email',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                      decoration: const InputDecoration(labelText: 'Email', border: OutlineInputBorder()
                       ),
+                      onTap: _scrollToField,
                     ),
                     SizedBox(height: 70),
                     SizedBox(
@@ -85,7 +78,6 @@ class _SetPasswordState extends State<SetPassword> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.send, size: 27, color: Colors.black),
                             SizedBox(width: 8),
                             Text(
                               'Send',

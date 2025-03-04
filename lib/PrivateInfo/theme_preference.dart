@@ -6,12 +6,15 @@ class ThemePreference {
 
   Future<void> saveThemeMode(ThemeMode mode) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString(themeKey, mode.toString());
+    await prefs.setString(themeKey, mode.toString());
+    print("Theme Saved: ${mode.toString()}"); // Debugging
   }
 
   Future<ThemeMode> getThemeMode() async {
     final prefs = await SharedPreferences.getInstance();
     String? themeString = prefs.getString(themeKey);
+    print("Theme Retrieved: $themeString"); // Debugging
+
     if (themeString == ThemeMode.dark.toString()) {
       return ThemeMode.dark;
     } else if (themeString == ThemeMode.light.toString()) {

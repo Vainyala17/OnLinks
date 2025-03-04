@@ -30,10 +30,10 @@ void main() async {
 
   try {
     await Firebase.initializeApp();
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     var initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
 
-    var flutterLocalNotificationsPlugin;
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
     await FirebaseAppCheck.instance.activate(
       webProvider: ReCaptchaV3Provider('your-site-key'),
@@ -45,6 +45,7 @@ void main() async {
   }
   final themePreference = ThemePreference();
   final savedThemeMode = await themePreference.getThemeMode();
+  print("Initial Theme Mode in main(): $savedThemeMode"); // Debugging
   runApp(MyApp(savedThemeMode: savedThemeMode));
 }
 
@@ -71,12 +72,13 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _themeMode = mode; // Update the theme mode
     });
+    print("Theme Updated to: $_themeMode"); // Debugging
   }
 
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: Size(360, 690), // Base design size
+      designSize: const Size(360, 690), // Base design size
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
@@ -121,7 +123,8 @@ class AppInitializer extends StatelessWidget {
       final FirebaseFirestore db = FirebaseFirestore.instance;
       final CollectionReference users = db.collection('users');
       final DocumentSnapshot snapshot = await users.doc('user').get();
-      final userFields = snapshot.data() ?? {}; // You can use this data if needed
+      final userFields = snapshot.data() as Map<String, dynamic>? ?? {};
+      print("🔍 User data fetched: $userFields"); // Debugging // You can use this data if needed
     } catch (e) {
       print("Error fetching user data: $e");
     }
@@ -135,7 +138,9 @@ class AppInitializer extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Center(child: Text("Error initializing app"));
+          return Scaffold(
+            body: Center(child: Text("🚨 Failed to load app. Please restart.")),
+          );
         } else {
           return MyLogin(); // Show login screen after initialization
         }
