@@ -76,6 +76,7 @@ dependencies:
   test_api: ^0.7.2
   vm_service: ^14.3.1
   win32: ^5.11.0
+  flutter_native_splash: ^2.4.5
 
     # Manually add the transitive dependencies with the latest versions:
 #  collection: ^1.19.0
@@ -106,6 +107,14 @@ flutter_icons:
 #  leak_tracker_flutter_testing: ^3.0.8
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+flutter_native_splash:
+  color: "#ffffff"  # Background color (change as needed)
+  image: assets/icon/onlinks_logo.png  # Your On-Links app icon
+  android: true
+  ios: true
+  android_12:
+    image: assets/icon/onlinks_logo.png
+    icon_background_color: "#ffffff"
 
 # The following section is specific to Flutter packages.
 flutter:

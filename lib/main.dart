@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_project/splash_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_project/services/firebase_messaging_service.dart';
@@ -103,9 +104,7 @@ class _MyAppState extends State<MyApp> {
               'EducationPage': (context) => EducationPage(),
               'webviewPage': (context) => WebViewPage(url: '',),
             },
-            home: AppInitializer(
-              onThemeModeChanged: _updateThemeMode,
-            ),
+            home: SplashScreen(),
           ),
         );
       },
