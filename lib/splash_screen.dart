@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'home.dart';  // Your main screen
-import 'LogReg/Login.dart'; // Your login screen
+import 'home.dart';
+import 'LogReg/Login.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -32,22 +32,29 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Match background color with app drawer
+      backgroundColor: Colors.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
               'assets/icon/onlinks_logo.png',
-              width: 40, // Increased size for better visibility
+              width: 50, // Adjust for proper size
+              height: 50,
+              fit: BoxFit.contain,
             ),
-            SizedBox(height: 12),
-            Text(
-              "OnLinks", // App name
-              style: TextStyle(
-                fontSize: 28, // Slightly bigger font
-                fontWeight: FontWeight.bold,
-                color: Colors.black, // Match app drawer style
+            SizedBox(height: 50),
+            Container(
+              color: Colors.red, // Add a background color
+              padding: EdgeInsets.all(10),
+              child: Text(
+                "OnLinks",
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
           ],

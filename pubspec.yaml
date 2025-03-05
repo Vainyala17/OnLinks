@@ -100,7 +100,7 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/Onlinks_Icon.jpg"  # Set the path to your icon
+  image_path: "assets/images/Onlinks_Icon.png"  # Set the path to your icon
   adaptive_icon_foreground: "assets/icon/onlinks_foreground.png"  # For Android adaptive icons
   adaptive_icon_background: "assets/icon/onlinks_background.png"
 #  leak_tracker: ^10.0.7
