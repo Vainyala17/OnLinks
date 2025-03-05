@@ -14,14 +14,17 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Timer(Duration(seconds: 3), () {
-      // Check if user is logged in
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        // User is logged in, go to HomePage
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomePage(onThemeModeChanged: (ThemeMode mode) {  },)));
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => HomePage(onThemeModeChanged: (ThemeMode mode) {})),
+        );
       } else {
-        // No user logged in, go to LoginPage
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => MyLogin()));
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => MyLogin()),
+        );
       }
     });
   }
@@ -29,16 +32,23 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Background color
+      backgroundColor: Colors.white, // Match background color with app drawer
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/icon/onlinks_logo.png', width: 100), // Adjust size
-            SizedBox(height: 20),
+            Image.asset(
+              'assets/icon/onlinks_logo.png',
+              width: 40, // Increased size for better visibility
+            ),
+            SizedBox(height: 12),
             Text(
-              "On-Links",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              "OnLinks", // App name
+              style: TextStyle(
+                fontSize: 28, // Slightly bigger font
+                fontWeight: FontWeight.bold,
+                color: Colors.black, // Match app drawer style
+              ),
             ),
           ],
         ),
