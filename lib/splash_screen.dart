@@ -33,28 +33,29 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
+      body: Expanded(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              'assets/icon/onlinks_logo.png',
-              width: 50, // Adjust for proper size
-              height: 50,
-              fit: BoxFit.contain,
-            ),
-            SizedBox(height: 50),
+            // Image.asset(
+            //   'assets/icon/onlinks_logo.png',
+            //   width: 50, // Adjust for proper size
+            //   height: 50,
+            //   fit: BoxFit.contain,
+            // ),
+            //SizedBox(height: 10),
             Container(
-              color: Colors.red, // Add a background color
-              padding: EdgeInsets.all(10),
-              child: Text(
-                "OnLinks",
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
+              // width: 200,
+              // height: 50,
+              // color: Colors.red, // Visible background
+              child: Center(
+                child: Text(
+                  "OnLinks",
+                  style: TextStyle(fontSize: 50,  // Make it large
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue, // Change color for contrast
+                    backgroundColor: Colors.yellow,),
                 ),
-                textAlign: TextAlign.center,
               ),
             ),
           ],
