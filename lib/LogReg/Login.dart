@@ -17,26 +17,27 @@ class _MyLoginState extends State<MyLogin> {
   String _message = ''; // Message to show login errors
 
   // Method to validate and submit form
-  Future<void> _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      try {
-        // Attempt to log in the user with email and password
-        UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _emailController.text,
-          password: _passwordController.text,
-        );
+  Future<void> _submitForm(String email, String password) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
 
-        // Navigate to home if login is successful
-        Navigator.pushNamed(context, 'home');
-      } on FirebaseAuthException catch (e) {
-        setState(() {
-          _message = 'Login failed: ${e.message}'; // Show error message
-        });
+      User? user = userCredential.user;
+
+      if (user != null && !user.emailVerified) {
+        await FirebaseAuth.instance.signOut(); // Prevent login if not verified
+        throw FirebaseAuthException(
+          code: 'email-not-verified',
+          message: 'Email is not verified. Please check your inbox.',
+        );
       }
-    } else {
-      // Show message if form is not valid
+
+      // Navigate to home page if email is verified
+      Navigator.pushReplacementNamed(context, "/home");
+
+    } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please fill in all required fields')),
+        SnackBar(content: Text(e.message ?? "Login failed")),
       );
     }
   }
@@ -128,7 +129,11 @@ class _MyLoginState extends State<MyLogin> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: _submitForm,
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              _submitForm(_emailController.text, _passwordController.text);
+                            }
+                          },
                           style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(vertical: 11),
                             backgroundColor: Color(0xFF2196F3),
@@ -147,6 +152,26 @@ class _MyLoginState extends State<MyLogin> {
                                 ),
                               ),
                             ],
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          User? user = FirebaseAuth.instance.currentUser;
+                          if (user != null && !user.emailVerified) {
+                            await user.sendEmailVerification();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("Verification email sent. Please check your inbox.")),
+                            );
+                          }
+                        },
+                        child: Text(
+                          "Resend Verification Email",
+                          style: TextStyle(
+                            fontFamily: "lato",
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline,
+                            fontSize: 16,
                           ),
                         ),
                       ),

@@ -68,6 +68,7 @@ void setupNotifications() {
     RemoteNotification? notification = message.notification;
 
     if (notification != null) {
+      var flutterLocalNotificationsPlugin;
       flutterLocalNotificationsPlugin.show(
         notification.hashCode,
         notification.title,

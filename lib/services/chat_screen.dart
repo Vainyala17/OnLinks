@@ -13,33 +13,34 @@ class _ChatScreenState extends State<ChatScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Send message to Firestore
-  void sendMessage() async {
+  Future<void> sendMessage() async {
     final user = _auth.currentUser;
     if (user == null) {
       print("User not authenticated!");
       return; // Stop if the user is not logged in
     }
-
-    if (_messageController.text.trim().isEmpty) return;
-
+    String messageText = _messageController.text.trim();
+    if (messageText.isEmpty) return; // Don't send empty messages
     try {
-      await _firestore.collection('messages').add({
-        'text': _messageController.text.trim(),
+      // Store in 'chats' collection
+      await _firestore.collection('chats').add({
+        'message': messageText,
+        'userId': user.uid, // Store user ID
         'sender': user.email,
         'timestamp': FieldValue.serverTimestamp(),
       });
-      _messageController.clear();
+
+      // Store in 'messages' collection
+      await _firestore.collection('messages').add({
+        'text': messageText,
+        'sender': user.email,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      _messageController.clear(); // Clear text field after sending
     } catch (e) {
       print("Error sending message: $e");
     }
-  }
-  void sendMessage(String message, String formName) {
-    FirebaseFirestore.instance.collection('chats').add({
-      'message': message,
-      'formName': formName,
-      'userId': FirebaseAuth.instance.currentUser?.uid, // Store user ID
-      'timestamp': FieldValue.serverTimestamp(), // Store time of message
-    });
   }
 
   @override

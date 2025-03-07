@@ -109,6 +109,27 @@ class _MyRegisterState extends State<MyRegister> {
       platformChannelSpecifics,
     );
   }
+  Future<void> signUpUser(String email, String password) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      User? user = userCredential.user;
+      await user?.sendEmailVerification(); // Send email verification
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Verification email sent. Please check your inbox.")),
+      );
+
+      Navigator.pushReplacementNamed(context, "/login"); // Navigate to login page
+
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message ?? "Registration failed")),
+      );
+    }
+  }
+
   void _scrollToField() {
     Future.delayed(Duration(milliseconds: 200), () {
       _scrollController.animateTo(
