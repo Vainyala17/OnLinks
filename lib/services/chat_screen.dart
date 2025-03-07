@@ -33,7 +33,14 @@ class _ChatScreenState extends State<ChatScreen> {
       print("Error sending message: $e");
     }
   }
-
+  void sendMessage(String message, String formName) {
+    FirebaseFirestore.instance.collection('chats').add({
+      'message': message,
+      'formName': formName,
+      'userId': FirebaseAuth.instance.currentUser?.uid, // Store user ID
+      'timestamp': FieldValue.serverTimestamp(), // Store time of message
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

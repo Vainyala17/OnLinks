@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_project/splash_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -29,27 +30,69 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   try {
     await Firebase.initializeApp();
+    print("✅ Firebase Initialized Successfully!");
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     var initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
 
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
     await FirebaseAppCheck.instance.activate(
-      webProvider: ReCaptchaV3Provider('your-site-key'),
+      androidProvider: AndroidProvider.debug,  // Use debug mode during development
+      webProvider: ReCaptchaV3Provider('your-actual-site-key'),  // Set actual site key
     );
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
     await FirebaseMessagingService.initialize();
   } catch (e) {
     print("Error initializing Firebase: $e");
   }
+
+  getToken();
   final themePreference = ThemePreference();
   final savedThemeMode = await themePreference.getThemeMode();
   print("Initial Theme Mode in main(): $savedThemeMode"); // Debugging
   runApp(MyApp(savedThemeMode: savedThemeMode));
 }
+void getToken() async {
+  try {
+    String? token = await FirebaseMessaging.instance.getToken();
+    print("✅ FCM Token: $token");
+  } catch (e) {
+    print("❌ Error Fetching Token: $e");
+  }
+}
+void setupNotifications() {
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    RemoteNotification? notification = message.notification;
 
+    if (notification != null) {
+      flutterLocalNotificationsPlugin.show(
+        notification.hashCode,
+        notification.title,
+        notification.body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            'high_importance_channel',
+            'High Importance Notifications',
+            importance: Importance.high,
+          ),
+        ),
+      );
+    }
+  });
+}
+void saveFCMToken() async {
+  String? token = await FirebaseMessaging.instance.getToken();
+  String userId = FirebaseAuth.instance.currentUser!.uid;
+
+  if (token != null) {
+    FirebaseFirestore.instance.collection('users').doc(userId).set({
+      'fcmToken': token,
+    }, SetOptions(merge: true));
+  }
+}
 class MyApp extends StatefulWidget {
   final ThemeMode savedThemeMode;
   const MyApp({super.key, required this.savedThemeMode});
@@ -65,6 +108,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     _themeMode = widget.savedThemeMode;
   }
+
 
   void _updateThemeMode(ThemeMode mode) async {
     final themePreference = ThemePreference();
