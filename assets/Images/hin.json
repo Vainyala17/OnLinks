@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "home": "होम",
   "search": "खोज",
@@ -12,3 +13,19 @@
   "download": "डाउनलोड करें",
   "privacyPolicy": "गोपनीयता नीति"
 }
+=======
+{
+  "home": "होम",
+  "search": "खोज",
+  "category": "श्रेणी",
+  "selectCategory": "श्रेणी चुनें",
+  "favorite": "पसंदीदा",
+  "popularForms": "लोकप्रिय फ़ॉर्म",
+  "history": "इतिहास",
+  "settings": "सेटिंग्स",
+  "share": "साझा करें",
+  "rate": "रेट करें",
+  "download": "डाउनलोड करें",
+  "privacyPolicy": "गोपनीयता नीति"
+}
+>>>>>>> 90d5fa9 (Fix line endings)

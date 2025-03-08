@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
 	"configurations" : 
 	[
@@ -41,3 +42,48 @@
 		"minor" : 3
 	}
 }
+=======
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6.0"
+					},
+					"projectIndex" : 0,
+					"source" : "."
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "Project"
+				}
+			],
+			"targets" : []
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "E:/2023 java/main/flutter_project/android/app/.cxx/Debug/5t274i5t/x86",
+		"source" : "C:/flutter_windows_3.22.3-stable/flutter/packages/flutter_tools/gradle/src/main/groovy"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}
+>>>>>>> 90d5fa9 (Fix line endings)

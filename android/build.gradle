@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 buildscript {
     ext.kotlin_version = '2.0.21'  // Latest stable Kotlin version
     repositories {
@@ -29,3 +30,36 @@ subprojects {
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
+=======
+buildscript {
+    ext.kotlin_version = '2.0.21'  // Latest stable Kotlin version
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.8.2'  // Recommended Gradle version
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.gms:google-services:4.4.2'  // Firebase services
+    }
+}
+
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.buildDir = "../build"
+
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
+>>>>>>> 90d5fa9 (Fix line endings)
