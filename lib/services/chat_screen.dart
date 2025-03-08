@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -15,31 +16,36 @@ class _ChatScreenState extends State<ChatScreen> {
   // Send message to Firestore
   Future<void> sendMessage() async {
     final user = _auth.currentUser;
-    if (user == null) {
-      print("User not authenticated!");
-      return; // Stop if the user is not logged in
-    }
+    if (user == null) return;
+
     String messageText = _messageController.text.trim();
-    if (messageText.isEmpty) return; // Don't send empty messages
+    if (messageText.isEmpty) return;
+
     try {
-      // Store in 'chats' collection
       await _firestore.collection('chats').add({
         'message': messageText,
-        'userId': user.uid, // Store user ID
+        'userId': user.uid,
         'sender': user.email,
         'timestamp': FieldValue.serverTimestamp(),
       });
-
-      // Store in 'messages' collection
-      await _firestore.collection('messages').add({
-        'text': messageText,
-        'sender': user.email,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-
-      _messageController.clear(); // Clear text field after sending
+      _messageController.clear();
     } catch (e) {
       print("Error sending message: $e");
+    }
+  }
+
+  // Function to format the date as "Today", "Yesterday", or a full date
+  String formatDateHeader(DateTime date) {
+    DateTime now = DateTime.now();
+    DateTime today = DateTime(now.year, now.month, now.day);
+    DateTime yesterday = today.subtract(Duration(days: 1));
+
+    if (date.isAfter(today)) {
+      return "Today";
+    } else if (date.isAfter(yesterday)) {
+      return "Yesterday";
+    } else {
+      return DateFormat('dd/MM/yyyy').format(date);
     }
   }
 
@@ -48,69 +54,77 @@ class _ChatScreenState extends State<ChatScreen> {
     final currentUserEmail = _auth.currentUser?.email;
 
     return Scaffold(
-      appBar: AppBar(title: Text("Community Chat")),
+      appBar: AppBar(title: Text("OnLinks Chat")),
       body: Column(
         children: [
-          // Messages List
+          // Chat Messages
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: _firestore
-                  .collection('messages')
-                  .orderBy('timestamp', descending: true)
+                  .collection('chats')
+                  .orderBy('timestamp', descending: false)
                   .snapshots(),
               builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Center(child: Text("Error loading messages"));
-                }
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                   return Center(child: Text("No messages yet."));
                 }
+
                 final messages = snapshot.data!.docs;
+                String? lastDisplayedDate;
 
                 return ListView.builder(
-                  reverse: true,
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
                     var message = messages[index];
                     bool isMe = message['sender'] == currentUserEmail;
 
-                    return Padding(
-                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                      child: Row(
-                        mainAxisAlignment:
-                        isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-                        children: [
-                          if (!isMe) // Show sender name only for others
-                            CircleAvatar(
-                              backgroundColor: Colors.blueGrey,
+                    // Convert timestamp to readable format
+                    Timestamp? timestamp = message['timestamp'];
+                    DateTime date = timestamp?.toDate() ?? DateTime.now();
+                    String time = DateFormat('hh:mm a').format(date);
+                    String formattedDate = formatDateHeader(date);
+
+                    // Show date header only when the date changes
+                    bool showDateHeader = lastDisplayedDate != formattedDate;
+                    lastDisplayedDate = formattedDate;
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (showDateHeader)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5),
+                            child: Center(
                               child: Text(
-                                message['sender'][0].toUpperCase(),
-                                style: TextStyle(color: Colors.white),
+                                formattedDate,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
+                                ),
                               ),
                             ),
-                          SizedBox(width: 8), // Space between avatar and message
-                          Column(
+                          ),
+                        Align(
+                          alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                          child: Column(
                             crossAxisAlignment:
                             isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                             children: [
                               if (!isMe)
                                 Padding(
-                                  padding: EdgeInsets.only(left: 8, bottom: 2),
+                                  padding: EdgeInsets.only(left: 10),
                                   child: Text(
                                     message['sender'],
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.grey,
-                                    ),
+                                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey),
                                   ),
                                 ),
                               Container(
                                 padding: EdgeInsets.all(12),
-                                margin: EdgeInsets.symmetric(vertical: 2),
+                                margin: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
                                 constraints: BoxConstraints(maxWidth: 250),
                                 decoration: BoxDecoration(
-                                  color: isMe ? Colors.green : Colors.grey[300],
+                                  color: isMe ? Colors.blue[300] : Colors.grey[300],
                                   borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(15),
                                     topRight: Radius.circular(15),
@@ -118,15 +132,28 @@ class _ChatScreenState extends State<ChatScreen> {
                                     bottomRight: isMe ? Radius.zero : Radius.circular(15),
                                   ),
                                 ),
-                                child: Text(
-                                  message['text'],
-                                  style: TextStyle(color: isMe ? Colors.white : Colors.black),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      message['message'],
+                                      style: TextStyle(color: isMe ? Colors.white : Colors.black),
+                                    ),
+                                    SizedBox(height: 5),
+                                    Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: Text(
+                                        time,
+                                        style: TextStyle(fontSize: 10, color: Colors.black54),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     );
                   },
                 );
@@ -152,7 +179,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   icon: Icon(Icons.send, color: Colors.blue),
                   onPressed: () {
                     sendMessage();
-                    FocusScope.of(context).unfocus(); // Hide keyboard
+                    FocusScope.of(context).unfocus();
                   },
                 ),
               ],

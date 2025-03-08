@@ -47,6 +47,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   flutter_email_sender: ^7.0.0
   smooth_page_indicator: ^1.0.0+2
+  permission_handler: ^11.4.0
   share_plus: ^10.1.2
   speech_to_text: ^7.0.0
   firebase_storage: ^12.3.6

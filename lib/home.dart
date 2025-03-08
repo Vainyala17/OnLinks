@@ -7,6 +7,7 @@ import 'CategoryOptions/CertificatesPage.dart';
 import 'CategoryOptions/EducationPage.dart';
 import 'CategoryOptions/GovernmentPage.dart';
 import 'CategoryOptions/HealthPage.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'app_drawer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -52,9 +53,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _initializeSpeech() async {
-    bool available = await _speech.initialize();
+    await Permission.microphone.request(); // Ensure microphone access
+    bool available = await _speech.initialize(
+      onError: (error) => print("Speech Error: $error"),
+      onStatus: (status) => print("Speech Status: $status"),
+    );
     if (!available) {
-      print("Speech recognition not available");
+      print("Speech recognition is not available");
     }
   }
 
@@ -89,8 +94,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _startListening() async {
-    if (!_isListening) {
+  void _toggleListening() async {
+    if (_isListening) {
+      _speech.stop();
+      setState(() => _isListening = false);
+      _performSearch(_searchController.text);
+    } else {
       bool available = await _speech.initialize();
       if (available) {
         setState(() => _isListening = true);
@@ -102,18 +111,11 @@ class _HomePageState extends State<HomePage> {
           },
           listenFor: Duration(seconds: 5),
         );
+      } else {
+        print("Speech recognition not available");
       }
     }
   }
-
-  void _stopListening() {
-    if (_isListening) {
-      _speech.stop();
-      setState(() => _isListening = false);
-      _performSearch(_searchController.text);
-    }
-  }
-
   void _performSearch(String query) {
     print("Searching for: $query");
   }
@@ -269,13 +271,7 @@ class _HomePageState extends State<HomePage> {
               IconButton(
                 icon: Icon(_isListening ? Icons.mic_off : Icons.mic,
                     color: Colors.grey),
-                onPressed: () {
-                  if (_isListening) {
-                    _stopListening();
-                  } else {
-                    _startListening();
-                  }
-                },
+                onPressed: _toggleListening,
               ),
             ],
           ),
