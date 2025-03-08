@@ -2,54 +2,27 @@ C/C++ Structured Logi
 g
 eC:\flutter_windows_3.22.3-stable\flutter\packages\flutter_tools\gradle\src\main\groovy\CMakeLists.txtC
 A
-<<<<<<< HEAD
-?com.android.build.gradle.internal.cxx.io.EncodedFileFingerPrint	à×»©×2§ ÅÙþ–Õ2n
+?com.android.build.gradle.internal.cxx.io.EncodedFileFingerPrint	ËÕÐ»×2§ ÅÙþ–Õ2n
 l
-jE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\additional_project_files.txt	à×»©×2 ÈÊ¯Š×2k
+jE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\additional_project_files.txt	ËÕÐ»×2 ªÔÐ»×2k
 i
-gE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\android_gradle_build.json	à×»©×2Õ ÌÊ¯Š×2p
+gE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\android_gradle_build.json	ËÕÐ»×2Í ­ÔÐ»×2p
 n
-lE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\android_gradle_build_mini.json	à×»©×2î ÑÊ¯Š×2]
+lE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\android_gradle_build_mini.json	ÌÕÐ»×2ª ÙÔÐ»×2]
 [
-YE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\build.ninja	à×»©×2°« ÅÉ¯Š×2a
+YE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\build.ninja	ÌÕÐ»×2èÔ ÞÓÐ»×2a
 _
-]E:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\build.ninja.txt	à×»©×2f
+]E:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\build.ninja.txt	ÌÕÐ»×2f
 d
-bE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\build_file_index.txt	à×»©×2e ÙÊ¯Š×2g
+bE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\build_file_index.txt	ÌÕÐ»×2e ŒÕÐ»×2g
 e
-cE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\compile_commands.json	à×»©×2	k
+cE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\compile_commands.json	ÌÕÐ»×2	k
 i
-gE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\compile_commands.json.bin	à×»©×2
+gE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\compile_commands.json.bin	ÌÕÐ»×2
 q
 o
-mE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\metadata_generation_command.txt	à×»©×2ÿ ÓÊ¯Š×2d
+mE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\metadata_generation_command.txt	ÌÕÐ»×2ç ˆÕÐ»×2d
 b
-`E:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\prefab_config.json	à×»©×2( ÕÊ¯Š×2i
+`E:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\prefab_config.json	ÌÕÐ»×2( ‰ÕÐ»×2i
 g
-eE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\symbol_folder_index.txt	à×»©×2\ ×Ê¯Š×2
-=======
-?com.android.build.gradle.internal.cxx.io.EncodedFileFingerPrint	æ‹¦¸×2§ ÅÙþ–Õ2n
-l
-jE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\additional_project_files.txt	æ‹¦¸×2 ÈÊ¯Š×2k
-i
-gE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\android_gradle_build.json	æ‹¦¸×2Õ ÌÊ¯Š×2p
-n
-lE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\android_gradle_build_mini.json	æ‹¦¸×2î ÑÊ¯Š×2]
-[
-YE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\build.ninja	æ‹¦¸×2°« ÅÉ¯Š×2a
-_
-]E:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\build.ninja.txt	æ‹¦¸×2f
-d
-bE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\build_file_index.txt	æ‹¦¸×2e ÙÊ¯Š×2g
-e
-cE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\compile_commands.json	æ‹¦¸×2	k
-i
-gE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\compile_commands.json.bin	æ‹¦¸×2
-q
-o
-mE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\metadata_generation_command.txt	æ‹¦¸×2ÿ ÓÊ¯Š×2d
-b
-`E:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\prefab_config.json	æ‹¦¸×2( ÕÊ¯Š×2i
-g
-eE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\symbol_folder_index.txt	æ‹¦¸×2\ ×Ê¯Š×2
->>>>>>> 90d5fa9 (Fix line endings)
+eE:\2023 java\main\flutter_project\android\app\.cxx\Debug\5t274i5t\armeabi-v7a\symbol_folder_index.txt	ÌÕÐ»×2\ ‹ÕÐ»×2

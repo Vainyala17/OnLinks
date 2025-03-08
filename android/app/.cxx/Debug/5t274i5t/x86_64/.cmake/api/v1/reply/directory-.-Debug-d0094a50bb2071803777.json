@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
 	"backtraceGraph" : 
 	{
@@ -13,19 +12,3 @@
 		"source" : "."
 	}
 }
-=======
-{
-	"backtraceGraph" : 
-	{
-		"commands" : [],
-		"files" : [],
-		"nodes" : []
-	},
-	"installers" : [],
-	"paths" : 
-	{
-		"build" : ".",
-		"source" : "."
-	}
-}
->>>>>>> 90d5fa9 (Fix line endings)

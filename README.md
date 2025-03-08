@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 ## OnLinks 📌
 A user-friendly mobile app for accessing and filling out online forms with guided assistance.
 
