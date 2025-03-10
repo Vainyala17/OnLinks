@@ -155,26 +155,6 @@ class _MyLoginState extends State<MyLogin> {
                           ),
                         ),
                       ),
-                      TextButton(
-                        onPressed: () async {
-                          User? user = FirebaseAuth.instance.currentUser;
-                          if (user != null && !user.emailVerified) {
-                            await user.sendEmailVerification();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Verification email sent. Please check your inbox.")),
-                            );
-                          }
-                        },
-                        child: Text(
-                          "Resend Verification Email",
-                          style: TextStyle(
-                            fontFamily: "lato",
-                            color: Colors.blue,
-                            decoration: TextDecoration.underline,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
                       SizedBox(height: 70),
                       // Display login error message if any
                       if (_message.isNotEmpty)

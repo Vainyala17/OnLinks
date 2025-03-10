@@ -25,74 +25,72 @@ class _MyRegisterState extends State<MyRegister> {
   @override
   void initState() {
     super.initState();
+
     var initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+    // Request notification permission
+    flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
   }
+
   Future<void> _register() async {
-    final email = _emailController.text;
-    final password = _passwordController.text;
-    final confirmPassword = _confirmPasswordController.text;
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
+
+    // Email validation before Firebase call
+    final emailRegex = RegExp(
+        r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$");
+    if (!emailRegex.hasMatch(email)) {
+      _showMessageDialog('Error', 'Enter a valid email address.');
+      return;
+    }
 
     if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
-      setState(() {
-        _message = 'Please fill in all fields';
-      });
+      _showMessageDialog('Error', 'Please fill in all fields');
       return;
     }
 
     if (password != confirmPassword) {
-      setState(() {
-        _message = 'Passwords do not match';
-      });
+      _showMessageDialog('Error', 'Passwords do not match');
       return;
     }
 
     try {
-      // Check if the email is already registered
-      final existingUser = await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
-
-      if (existingUser.isNotEmpty) {
-        setState(() {
-          _message = 'This email is already registered. Please log in.';
-        });
-        return;
-      }
-
-      // Attempt to create a new user with the provided email and password
-      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-
-      setState(() {
-        _message = 'Registration successful!'; // Notify successful registration
-      });
-      // Save the user data to Firestore
       User? user = userCredential.user;
       if (user != null) {
         await _firestore.collection('users').doc(user.uid).set({
-          'name': 'Unnamed', // Default name, you can add a name field in the registration form if needed
+          'name': 'Unnamed',
           'email': email,
           'uid': user.uid,
           'createdAt': FieldValue.serverTimestamp(),
         });
       }
+
       _sendWelcomeNotification();
-      // Navigate to home page or do something else
-      Navigator.pushNamed(context, 'home');
+
+      _showMessageDialog('Success', 'Registration successful!', () {
+        Navigator.pushNamed(context, 'home');
+      });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
-        setState(() {
-          _message = 'The email is already registered'; // Notify about already registered email
-        });
+        _showMessageDialog(
+            'Error', 'Email is already registered. Try logging in.');
       } else {
-        setState(() {
-          _message = 'Registration failed: ${e.message}';
-        });
+        _showMessageDialog('Error', 'Registration failed: ${e.message}');
       }
     }
   }
+
   void _sendWelcomeNotification() async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'welcome_channel_id',
@@ -109,26 +107,27 @@ class _MyRegisterState extends State<MyRegister> {
       platformChannelSpecifics,
     );
   }
-  Future<void> signUpUser(String email, String password) async {
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-
-      User? user = userCredential.user;
-      await user?.sendEmailVerification(); // Send email verification
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Verification email sent. Please check your inbox.")),
-      );
-
-      Navigator.pushReplacementNamed(context, "/login"); // Navigate to login page
-
-    } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message ?? "Registration failed")),
-      );
-    }
+  void _showMessageDialog(String title, String message, [VoidCallback? onOkPressed]) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                if (onOkPressed != null) onOkPressed();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
+
 
   void _scrollToField() {
     Future.delayed(Duration(milliseconds: 200), () {

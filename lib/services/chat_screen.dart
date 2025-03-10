@@ -12,6 +12,22 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final ScrollController _scrollController = ScrollController(); // Added Scroll Controller
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollToBottom();
+  }
+
+  // Auto-scroll to the bottom
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.jumpTo(_scrollController.position.minScrollExtent);
+      }
+    });
+  }
 
   // Send message to Firestore
   Future<void> sendMessage() async {
@@ -29,12 +45,13 @@ class _ChatScreenState extends State<ChatScreen> {
         'timestamp': FieldValue.serverTimestamp(),
       });
       _messageController.clear();
+      _scrollToBottom(); // Scroll to bottom after sending message
     } catch (e) {
       print("Error sending message: $e");
     }
   }
 
-  // Function to format the date as "Today", "Yesterday", or a full date
+  // Format date header as "Today", "Yesterday", or full date
   String formatDateHeader(DateTime date) {
     DateTime now = DateTime.now();
     DateTime today = DateTime(now.year, now.month, now.day);
@@ -62,7 +79,7 @@ class _ChatScreenState extends State<ChatScreen> {
             child: StreamBuilder<QuerySnapshot>(
               stream: _firestore
                   .collection('chats')
-                  .orderBy('timestamp', descending: false)
+                  .orderBy('timestamp', descending: true) // Newest messages first
                   .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
@@ -72,7 +89,14 @@ class _ChatScreenState extends State<ChatScreen> {
                 final messages = snapshot.data!.docs;
                 String? lastDisplayedDate;
 
+                // Scroll to bottom when new messages arrive
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _scrollToBottom();
+                });
+
                 return ListView.builder(
+                  controller: _scrollController, // Attach scroll controller
+                  reverse: true, // Start from bottom
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
                     var message = messages[index];
@@ -116,20 +140,27 @@ class _ChatScreenState extends State<ChatScreen> {
                                   padding: EdgeInsets.only(left: 10),
                                   child: Text(
                                     message['sender'],
-                                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey),
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey,
+                                    ),
                                   ),
                                 ),
                               Container(
                                 padding: EdgeInsets.all(12),
-                                margin: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 2, horizontal: 10),
                                 constraints: BoxConstraints(maxWidth: 250),
                                 decoration: BoxDecoration(
                                   color: isMe ? Colors.blue[300] : Colors.grey[300],
                                   borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(15),
                                     topRight: Radius.circular(15),
-                                    bottomLeft: isMe ? Radius.circular(15) : Radius.zero,
-                                    bottomRight: isMe ? Radius.zero : Radius.circular(15),
+                                    bottomLeft:
+                                    isMe ? Radius.circular(15) : Radius.zero,
+                                    bottomRight:
+                                    isMe ? Radius.zero : Radius.circular(15),
                                   ),
                                 ),
                                 child: Column(
@@ -137,14 +168,16 @@ class _ChatScreenState extends State<ChatScreen> {
                                   children: [
                                     Text(
                                       message['message'],
-                                      style: TextStyle(color: isMe ? Colors.white : Colors.black),
+                                      style: TextStyle(
+                                          color: isMe ? Colors.white : Colors.black),
                                     ),
                                     SizedBox(height: 5),
                                     Align(
                                       alignment: Alignment.bottomRight,
                                       child: Text(
                                         time,
-                                        style: TextStyle(fontSize: 10, color: Colors.black54),
+                                        style: TextStyle(
+                                            fontSize: 10, color: Colors.black54),
                                       ),
                                     ),
                                   ],
@@ -171,7 +204,8 @@ class _ChatScreenState extends State<ChatScreen> {
                     controller: _messageController,
                     decoration: InputDecoration(
                       hintText: "Type a message...",
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30)),
                     ),
                   ),
                 ),
