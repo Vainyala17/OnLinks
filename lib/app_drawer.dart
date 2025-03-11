@@ -102,40 +102,6 @@ class AppDrawer extends StatelessWidget {
               );
             },
           ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.favorite),
-            title: Text('Favorites'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      FavoritesPage(favoriteLinks: List<Map<String, dynamic>>.from(favoriteLinks)),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.video_library),
-            title: Text('Instructional Videos'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => InstructionalVideosPage(),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.exit_to_app),
-            title: Text('Logout'),
-            onTap: () async {
-              await FirebaseAuth.instance.signOut();
-              Navigator.pushReplacementNamed(context, '/login');
-            },
-          ),
         ],
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 
 class HealthPage extends StatefulWidget {
   @override
@@ -13,6 +14,7 @@ class _HealthPageState extends State<HealthPage> {
       'description': 'Apply for an AIIMS Bhubaneswar.',
       'url': 'https://aiimsbbsrrecruitment.nic.in/Index/institute_register/ins/NzBjbmdUNi9IZ0hGOW1SSDZFWjRJUT09',
       'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvtVQuWr0xI_Hlsu_AcsBhR2SdxwbfRTXNXQ&s',
+      'video': '',
     },
   ];
 
@@ -119,10 +121,14 @@ class FormDetailsPage extends StatelessWidget {
                 children: [
                   _buildGridItem(Icons.edit, "Fill the form here", () => _launchURL(form['url']!)),
                   _buildGridItem(Icons.play_circle_fill, "Watch the video", () {
-                    // Add your video link logic here
+                    if (form.containsKey('video') && form['video']!.isNotEmpty) {
+                      _launchURL(form['video']!);
+                    } else {
+                      _showError(context);
+                    }
                   }),
                   _buildGridItem(Icons.share, "Share the link", () {
-                    // Add sharing logic
+                    _shareContent("Check out this form: ${form['url']!}");
                   }),
                   _buildGridItem(Icons.favorite, "Favorite", () {
                     // Add favorite logic
@@ -158,7 +164,14 @@ class FormDetailsPage extends StatelessWidget {
     );
   }
 }
-
+void _shareContent(String content) {
+  Share.share(content);
+}
+void _showError(BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text('No video available for this form.')),
+  );
+}
 void _launchURL(String url) async {
   Uri uri = Uri.parse(url);
   if (await canLaunchUrl(uri)) {

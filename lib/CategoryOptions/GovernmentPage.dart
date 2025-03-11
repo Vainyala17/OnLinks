@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 
 class GovernmentPage extends StatefulWidget {
   @override
@@ -13,30 +14,35 @@ class _GovernmentPageState extends State<GovernmentPage> {
       'description': 'Apply for an Indian Navy.',
       'url': 'https://www.joinindiannavy.gov.in/en/account/account/state',
       'image': 'https://images.careerindia.com/img/2022/03/indiannavy-1647586762.jpg',
+      'video': '',
     },
     {
       'title': 'Union Bank Saving Account Form',
       'description': 'Joint Director Accounts & Treasuries Nagpur!',
       'url': 'https://casa.unionbankofindia.co.in/savings-account/#/basic-details',
       'image': 'https://st5.depositphotos.com/9851828/62088/v/450/depositphotos_620882968-stock-illustration-government-maharashtra-icon-lamp-sanskrit.jpg',
+      'video': '',
     },
     {
       'title': 'MahaGenco',
       'description': 'Recruitment for the post of Technician',
       'url': 'https://ibpsonline.ibps.in/mspgctjun23/',
       'image': 'https://getlogo.net/wp-content/uploads/2020/01/mahagenco-maharashtra-state-power-generation-co-ltd-logo-vector.png',
+      'video': '',
     },
     {
       'title': 'CIDCO we make Cities',
       'description': 'CIDCO we make Cities Application form',
       'url': 'https://ibpsonline.ibps.in/cidcojul24/',
       'image': 'https://pbs.twimg.com/profile_images/1564205620274016256/J4dZtUo4_400x400.jpg',
+      'video': '',
     },
     {
       'title': 'Indian Navy',
       'description': 'Apply for an Indian Navy.',
       'url': 'https://www.joinindiannavy.gov.in/en/account/account/state',
       'image': 'https://images.careerindia.com/img/2022/03/indiannavy-1647586762.jpg',
+      'video': '',
     },
   ];
 
@@ -143,10 +149,14 @@ class FormDetailsPage extends StatelessWidget {
                 children: [
                   _buildGridItem(Icons.edit, "Fill the form here", () => _launchURL(form['url']!)),
                   _buildGridItem(Icons.play_circle_fill, "Watch the video", () {
-                    // Add your video link logic here
+                    if (form.containsKey('video') && form['video']!.isNotEmpty) {
+                      _launchURL(form['video']!);
+                    } else {
+                      _showError(context);
+                    }
                   }),
                   _buildGridItem(Icons.share, "Share the link", () {
-                    // Add sharing logic
+                    _shareContent("Check out this form: ${form['url']!}");
                   }),
                   _buildGridItem(Icons.favorite, "Favorite", () {
                     // Add favorite logic
@@ -182,7 +192,14 @@ class FormDetailsPage extends StatelessWidget {
     );
   }
 }
-
+void _shareContent(String content) {
+  Share.share(content);
+}
+void _showError(BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text('No video available for this form.')),
+  );
+}
 void _launchURL(String url) async {
   Uri uri = Uri.parse(url);
   if (await canLaunchUrl(uri)) {

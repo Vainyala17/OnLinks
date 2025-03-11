@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
   final List<String> imageUrls = [
     'https://egov.eletsonline.com/wp-content/uploads/2016/04/MahaLogo-1.png',
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVD5h2x2fZ1DozJ5aJwToB1CH9X0UwOhAfeGHm9usD-HgZLuL1SlmDYkHrVJB7JOd2oA&usqp=CAU',
-    'https://www.eprashasan.com/myimg/logo.png',
+    'https://app.eprashasan.com/assets/images/logos/logo.png',
     'https://www.uvic.ca/retirees/assets/docs/scholarship.jpg',
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkgmj-AmZNelpJa1uLc2phMjL6eOuM7n_sr8CT_bMlYT3xHkKW0U6N2OgiVflLSOs5DME&usqp=CAU',
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2h3_C2bDX119k2M_oxMqCXHEEpkviNT2HDQ&s',
@@ -189,7 +189,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => EducationPage()));
                 break;
-              case 'Banking':
+              case 'Bank':
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => BankingPage()));
                 break;

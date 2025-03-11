@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 
 class CertificatePage extends StatefulWidget {
   @override
@@ -13,6 +14,14 @@ class _CertificatePageState extends State<CertificatePage> {
       'description': 'Police Clearance Services Maharashtra Police',
       'url': 'https://pcs.mahaonline.gov.in/Forms/Home.aspx',
       'image': 'https://pcs.mahaonline.gov.in/Images/police-logo.png',
+      'video': 'https://www.youtube.com/watch?v=IOX_Krhy44Q',
+    },
+    {
+      'title': 'RRB Application Form',
+      'description': 'Railway Recruitment Board.. Ministry of Railways, Government of India',
+      'url': 'https://www.rrbapply.gov.in/#/auth/home?flag=true',
+      'image': 'https://w7.pngwing.com/pngs/236/834/png-transparent-railway-recruitment-board-exam-rrb-rail-transport-south-eastern-railway-zone-indian-railways-others-miscellaneous-text-logo.png',
+      'video': ''
     },
   ];
 
@@ -119,10 +128,14 @@ class FormDetailsPage extends StatelessWidget {
                 children: [
                   _buildGridItem(Icons.edit, "Fill the form here", () => _launchURL(form['url']!)),
                   _buildGridItem(Icons.play_circle_fill, "Watch the video", () {
-                    // Add your video link logic here
+                    if (form.containsKey('video') && form['video']!.isNotEmpty) {
+                      _launchURL(form['video']!);
+                    } else {
+                      _showError(context);
+                    }
                   }),
                   _buildGridItem(Icons.share, "Share the link", () {
-                    // Add sharing logic
+                    _shareContent("Check out this form: ${form['url']!}");
                   }),
                   _buildGridItem(Icons.favorite, "Favorite", () {
                     // Add favorite logic
@@ -158,7 +171,14 @@ class FormDetailsPage extends StatelessWidget {
     );
   }
 }
-
+void _shareContent(String content) {
+  Share.share(content);
+}
+void _showError(BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text('No video available for this form.')),
+  );
+}
 void _launchURL(String url) async {
   Uri uri = Uri.parse(url);
   if (await canLaunchUrl(uri)) {

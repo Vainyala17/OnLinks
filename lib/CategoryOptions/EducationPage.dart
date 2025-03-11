@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 
 class EducationPage extends StatefulWidget {
   @override
@@ -9,34 +10,53 @@ class EducationPage extends StatefulWidget {
 class _EducationPageState extends State<EducationPage> {
   final List<Map<String, String>> forms = [
     {
+      'title': 'E-Prashasan SFC',
+      'description': 'BNN College(SFC) Admission Form',
+      'url': 'https://app.eprashasan.com/submit/bnn_sfc',
+      'image': 'https://eprashasan2.s3.ap-south-1.amazonaws.com/maindb/cms/sanstha_logo/1216400001/1216400001.png',
+      'video': ''
+    },
+    {
+      'title': 'E-Prashasan Sr_College',
+      'description': 'BNN College(Sr_College) Admission Form',
+      'url': 'https://app.eprashasan.com/submit/Sr_College',
+      'image': 'https://eprashasan2.s3.ap-south-1.amazonaws.com/maindb/cms/sanstha_logo/1216400001/1216400001.png',
+      'video': ''
+    },
+    {
       'title': 'Supreme Court of India',
       'description': 'Supreme Court of India Application Form',
       'url': 'https://cdn3.digialm.com/EForms/configuredHtml/32912/92214/Index.html',
       'image': 'https://upload.wikimedia.org/wikipedia/commons/3/3b/Insignia_of_the_Supreme_Court_of_India.png',
+      'video': ''
     },
     {
       'title': 'MAHA DBT Scholarship',
       'description': 'Aaple Sarkar MahaDBT Scholarship Form',
       'url': 'https://mahadbt.maharashtra.gov.in/RegistrationLogin/RegistrationLogin',
       'image': 'https://www.examsplanner.in/media/scholarship/mahadbt_logo.png',
+      'video': ''
     },
     {
       'title': 'CUET (PG)',
       'description': 'Common University Entrance Test CUET (PG)',
       'url': 'https://exams.nta.ac.in/CUET-PG/',
       'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS66QxirBSeO9zyt5FV0DzreRjApOZT7nr3Dw&s',
+      'video': ''
     },
     {
-      'title': 'AIIMS Bhubaneswar Application Form',
-      'description': 'Apply for an AIIMS Bhubaneswar.',
-      'url': 'https://aiimsbbsrrecruitment.nic.in/Index/institute_register/ins/NzBjbmdUNi9IZ0hGOW1SSDZFWjRJUT09',
-      'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvtVQuWr0xI_Hlsu_AcsBhR2SdxwbfRTXNXQ&s',
+      'title': 'NEET UG Application Form',
+      'description': 'Apply for an NEET UG.',
+      'url': 'https://examinationservices.nic.in/neet2025/root/Home.aspx?enc=Ei4cajBkK1gZSfgr53ImFcFR+natXIEjJ1rCf6DMgOr/hcv4rs34T5gNmvCx/R+a',
+      'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuFXxhCLrUjmKBCUnaKfxpHFT0QE32-_5vRw&s',
+      'video': 'https://www.youtube.com/watch?v=rYKw93Z87JI'
     },
     {
-      'title': 'RRB Application Form',
-      'description': 'Railway Recruitment Board.. Ministry of Railways, Government of India',
-      'url': 'https://www.rrbapply.gov.in/#/auth/home?flag=true',
-      'image': 'https://w7.pngwing.com/pngs/236/834/png-transparent-railway-recruitment-board-exam-rrb-rail-transport-south-eastern-railway-zone-indian-railways-others-miscellaneous-text-logo.png',
+      'title': 'Government of maharashtra State Cet Cell',
+      'description': 'Apply for an Common Entrance Test Eaxms',
+      'url': 'https://cetcell.mahacet.org/',
+      'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTj1b14waMoQW2e14zFWGVqajtr_o1snO4jHoKs2mony48W_WJSG6wMpCUEklb1RK1_UgU&usqp=CAU',
+      'video': 'https://www.youtube.com/results?search_query=how+to+fill+cet+form+2025'
     },
   ];
 
@@ -143,12 +163,16 @@ class FormDetailsPage extends StatelessWidget {
                 children: [
                   _buildGridItem(Icons.edit, "Fill the form here", () => _launchURL(form['url']!)),
                   _buildGridItem(Icons.play_circle_fill, "Watch the video", () {
-                    // Add your video link logic here
+                    if (form.containsKey('video') && form['video']!.isNotEmpty) {
+                      _launchURL(form['video']!);
+                    } else {
+                      _showError(context);
+                    }
                   }),
-                  _buildGridItem(Icons.share, "Share the link", () {
-                    // Add sharing logic
-                  }),
-                  _buildGridItem(Icons.favorite, "Favorite", () {
+                _buildGridItem(Icons.share, "Share the link", () {
+                  _shareContent("Check out this form: ${form['url']!}");
+                }),
+                _buildGridItem(Icons.favorite, "Favorite", () {
                     // Add favorite logic
                   }),
                 ],
@@ -182,7 +206,14 @@ class FormDetailsPage extends StatelessWidget {
     );
   }
 }
-
+void _shareContent(String content) {
+  Share.share(content);
+}
+void _showError(BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text('No video available for this form.')),
+  );
+}
 void _launchURL(String url) async {
   Uri uri = Uri.parse(url);
   if (await canLaunchUrl(uri)) {

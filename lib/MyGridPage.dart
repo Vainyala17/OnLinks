@@ -10,14 +10,14 @@ class MyGridPage extends StatelessWidget {
   Future<void> _launchURL(String url) async {
     Uri uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication); // Opens in default browser
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
       throw 'Could not launch $url';
     }
   }
 
-  void _shareLink(String url) {
-    Share.share(url);
+  void _shareContent(String content) {
+    Share.share(content);
   }
 
   void _addToFavorites(String url) {
@@ -30,33 +30,39 @@ class MyGridPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //appBar: AppBar(title: Text("Supreme Court of India")),
-      body: Center(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.8, // Controls width
-          child: GridView.count(
-            shrinkWrap: true,
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 0.8, // Matches image layout
-            physics: NeverScrollableScrollPhysics(),
-            children: [
-              _buildGridItem(Icons.edit, "Fill the form here", () {
-                _launchURL(formUrl);
-              }),
-              _buildGridItem(Icons.play_circle_fill, "Watch the video", () {
-                _launchURL(videoUrl);
-              }),
+      body: Stack(
+        children: [
+          Positioned(
+            top: -MediaQuery.of(context).size.height * 0.3, // Move grid up
+            left: -MediaQuery.of(context).size.width * 0.3, // Move grid left
+            right: -MediaQuery.of(context).size.width * 0.3, // Move grid right
+            bottom: -MediaQuery.of(context).size.height * 0.3, // Move grid down
+            child: GridView.count(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 1.0,
+              clipBehavior: Clip.none,
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                _buildGridItem(Icons.edit, "Fill the form here", () {
+                  _launchURL(formUrl);
+                }),
+                _buildGridItem(Icons.play_circle_fill, "Watch the video", () {
+                  _launchURL(videoUrl);
+                }),
                 _buildGridItem(Icons.share, "Share the link", () {
-                  _shareLink(formUrl);
+                    _shareContent(
+                        "Check out this amazing app or link: https://yourlink.com");
+                    Navigator.pop(context);
                 }),
                 _buildGridItem(Icons.favorite, "Favorite", () {
                   _addToFavorites(formUrl);
                 }),
-            ],
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
