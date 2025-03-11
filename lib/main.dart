@@ -141,7 +141,7 @@ class _MyAppState extends State<MyApp> {
               'register': (context) => MyRegister(),
               'password': (context) => SetPassword(),
               'home': (context) => BottomNavBar(),
-              'favourite': (context) => FavoritesPage(favoriteLinks: [],),
+              'favourite': (context) => FavoritesPage(),
               'instruVideo': (context) => InstructionalVideosPage(),
               'HealthPage': (context) => HealthPage(),
               'BankingPage': (context) => BankingPage(),

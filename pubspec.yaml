@@ -54,6 +54,7 @@ dependencies:
   flutter_background_service: ^5.1.0
   image_picker: ^1.1.2
   shared_preferences: ^2.3.5
+  fluttertoast: ^8.2.12
   flutter_localizations:
     sdk: flutter
   async: ^2.11.0

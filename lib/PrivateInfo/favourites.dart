@@ -1,29 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class FavoritesPage extends StatefulWidget {
-  final List<Map<String, dynamic>> favoriteLinks;
-
-  const FavoritesPage({super.key, required this.favoriteLinks});
+  const FavoritesPage({super.key});
 
   @override
   _FavoritesPageState createState() => _FavoritesPageState();
 }
 
 class _FavoritesPageState extends State<FavoritesPage> {
-  late List<Map<String, dynamic>> favoriteLinks;
+  List<Map<String, dynamic>> favoriteLinks = [];
   final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    favoriteLinks = List<Map<String, dynamic>>.from(widget.favoriteLinks);
+    _loadFavorites();
   }
 
-  void removeFavorite(Map<String, dynamic> form) {
-    setState(() {
-      favoriteLinks.removeWhere((fav) => fav['url'] == form['url']);
-    });
+  Future<void> _loadFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? favoriteData = prefs.getString('favoriteLinks');
+    if (favoriteData != null) {
+      setState(() {
+        favoriteLinks = List<Map<String, dynamic>>.from(json.decode(favoriteData));
+      });
+    }
+  }
+
+  Future<void> _addToFavorite(Map<String, dynamic> form) async {
+    if (!favoriteLinks.any((fav) => fav['url'] == form['url'])) {
+      setState(() {
+        favoriteLinks.add(form);
+      });
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('favoriteLinks', json.encode(favoriteLinks));
+
+      Fluttertoast.showToast(msg: "Added to favorites"); // ✅ Show toast message
+    } else {
+      Fluttertoast.showToast(msg: "Already in favorites"); // ✅ Prevent duplicate storage
+    }
   }
 
   @override
@@ -75,7 +95,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                       children: [
                         IconButton(
                           icon: const Icon(Icons.favorite, color: Colors.red),
-                          onPressed: () => removeFavorite(filteredLinks[index]),
+                          onPressed: () => _addToFavorite(filteredLinks[index]), // ✅ Only store link, no navigation
                         ),
                         ElevatedButton(
                           onPressed: () async {

@@ -195,7 +195,7 @@ void _addToFavorites(BuildContext context, Map<String, String> form) {
   Navigator.push(
     context,
     MaterialPageRoute(
-      builder: (context) => FavoritesPage(favoriteLinks: [],),
+      builder: (context) => FavoritesPage(),
     ),
   );
 }
