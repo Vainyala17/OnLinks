@@ -191,8 +191,8 @@ class FormDetailsPage extends StatelessWidget {
 }
 void _addToFavorites(BuildContext context, Map<String, String> form) {
   // Save the form to Firebase or local storage
-  FirebaseFirestore.instance.collection('favourites').add(form);
-
+  //FirebaseFirestore.instance.collection('favourites').add(form);
+  favoriteForms.add(form);
   // Show a confirmation message
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(content: Text("Added to favorites!")),
