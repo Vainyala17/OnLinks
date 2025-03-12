@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
@@ -189,17 +190,14 @@ class FormDetailsPage extends StatelessWidget {
   }
 }
 void _addToFavorites(BuildContext context, Map<String, String> form) {
+  // Save the form to Firebase or local storage
+  FirebaseFirestore.instance.collection('favourites').add(form);
+
+  // Show a confirmation message
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(content: Text("Added to favorites!")),
   );
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => FavoritesPage(),
-    ),
-  );
 }
-
 
 void _shareContent(String content) {
   Share.share(content);

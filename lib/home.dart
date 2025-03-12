@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'CategoryOptions/BankingPage.dart';
 import 'CategoryOptions/CertificatesPage.dart';
+import 'CategoryOptions/PrivateJobsPage.dart';
 import 'CategoryOptions/EducationPage.dart';
 import 'CategoryOptions/GovernmentPage.dart';
 import 'CategoryOptions/HealthPage.dart';
@@ -33,7 +34,7 @@ class _HomePageState extends State<HomePage> {
     {'name': 'Government', 'image': 'assets/images/government.png'},
     {'name': 'Healthcare', 'image': 'assets/images/health.png'},
     {'name': 'Certificates', 'image': 'assets/images/certificate.png'},
-    {'name': 'Healthcare', 'image': 'assets/images/health.png'},
+    {'name': 'Private Jobs', 'image': 'assets/images/privateJob.png'},
   ];
 
   final List<String> imageUrls = [
@@ -205,9 +206,9 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => CertificatePage()));
                 break;
-              case 'Healthcare':
+              case 'Private Jobs':
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HealthPage()));
+                    MaterialPageRoute(builder: (context) => PrivateJobsPage()));
                 break;
               default:
                 break;
