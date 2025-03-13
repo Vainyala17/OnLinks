@@ -8,6 +8,7 @@ class CertificatePage extends StatefulWidget {
 }
 
 class _CertificatePageState extends State<CertificatePage> {
+  List<Map<String, String>> favoriteForms = [];
   final List<Map<String, String>> forms = [
     {
       'title': 'PCC',
@@ -85,14 +86,21 @@ class _CertificatePageState extends State<CertificatePage> {
         subtitle: Text(form['description']!),
         trailing: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFF6366F1),
+            backgroundColor: Color(0xFF2196F3),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => FormDetailsPage(form: form),
+                builder: (context) => FormDetailsPage(
+                  form: form,
+                  onFavorite: (favoriteForm) {
+                    setState(() {
+                      favoriteForms.add(favoriteForm);
+                    });
+                  },
+                ),
               ),
             );
           },
@@ -105,8 +113,9 @@ class _CertificatePageState extends State<CertificatePage> {
 
 class FormDetailsPage extends StatelessWidget {
   final Map<String, String> form;
+  final Function(Map<String, String>) onFavorite;
 
-  FormDetailsPage({required this.form});
+  FormDetailsPage({required this.form, required this.onFavorite});
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +147,10 @@ class FormDetailsPage extends StatelessWidget {
                     _shareContent("Check out this form: ${form['url']!}");
                   }),
                   _buildGridItem(Icons.favorite, "Favorite", () {
-                    // Add favorite logic
+                    onFavorite(form);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Added to favorites!")),
+                    );
                   }),
                 ],
               ),

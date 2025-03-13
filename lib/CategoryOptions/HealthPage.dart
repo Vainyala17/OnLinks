@@ -8,6 +8,7 @@ class HealthPage extends StatefulWidget {
 }
 
 class _HealthPageState extends State<HealthPage> {
+  List<Map<String, String>> favoriteForms = [];
   final List<Map<String, String>> forms = [
     {
       'title': 'AIIMS Bhubaneswar Application Form',
@@ -85,7 +86,14 @@ class _HealthPageState extends State<HealthPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => FormDetailsPage(form: form),
+                builder: (context) => FormDetailsPage(
+                  form: form,
+                  onFavorite: (favoriteForm) {
+                    setState(() {
+                      favoriteForms.add(favoriteForm);
+                    });
+                  },
+                ),
               ),
             );
           },
@@ -98,8 +106,9 @@ class _HealthPageState extends State<HealthPage> {
 
 class FormDetailsPage extends StatelessWidget {
   final Map<String, String> form;
+  final Function(Map<String, String>) onFavorite;
 
-  FormDetailsPage({required this.form});
+  FormDetailsPage({required this.form, required this.onFavorite});
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +140,10 @@ class FormDetailsPage extends StatelessWidget {
                     _shareContent("Check out this form: ${form['url']!}");
                   }),
                   _buildGridItem(Icons.favorite, "Favorite", () {
-                    // Add favorite logic
+                    onFavorite(form);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Added to favorites!")),
+                    );
                   }),
                 ],
               ),

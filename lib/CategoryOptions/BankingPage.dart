@@ -110,7 +110,14 @@ class _BankingPageState extends State<BankingPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => FormDetailsPage(form: form),
+                builder: (context) => FormDetailsPage(
+                  form: form,
+                  onFavorite: (favoriteForm) {
+                    setState(() {
+                      favoriteForms.add(favoriteForm);
+                    });
+                  },
+                ),
               ),
             );
           },
@@ -123,8 +130,9 @@ class _BankingPageState extends State<BankingPage> {
 
 class FormDetailsPage extends StatelessWidget {
   final Map<String, String> form;
+  final Function(Map<String, String>) onFavorite;
 
-  FormDetailsPage({required this.form});
+  FormDetailsPage({required this.form, required this.onFavorite});
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +164,10 @@ class FormDetailsPage extends StatelessWidget {
                     _shareContent("Check out this form: ${form['url']!}");
                   }),
                   _buildGridItem(Icons.favorite, "Favorite", () {
-                    _addToFavorites(context, form);
+                    onFavorite(form);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Added to favorites!")),
+                    );
                   }),
                 ],
               ),
@@ -188,15 +199,6 @@ class FormDetailsPage extends StatelessWidget {
       ),
     );
   }
-}
-void _addToFavorites(BuildContext context, Map<String, String> form) {
-  // Save the form to Firebase or local storage
-  //FirebaseFirestore.instance.collection('favourites').add(form);
-  favoriteForms.add(form);
-  // Show a confirmation message
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text("Added to favorites!")),
-  );
 }
 
 void _shareContent(String content) {
