@@ -13,7 +13,7 @@ import 'CategoryOptions/HealthPage.dart';
 import 'LogReg/Login.dart';
 import 'LogReg/password.dart';
 import 'LogReg/register.dart';
-import 'PrivateInfo/favourites.dart';
+import 'PrivateInfo/favorites.dart';
 import 'PrivateInfo/instructionalVideos.dart';
 import 'PrivateInfo/search_controller.dart';
 import 'PrivateInfo/theme_preference.dart';
@@ -141,7 +141,7 @@ class _MyAppState extends State<MyApp> {
               'register': (context) => MyRegister(),
               'password': (context) => SetPassword(),
               'home': (context) => BottomNavBar(),
-              'favourite': (context) => FavoritesPage(),
+              'favorite': (context) => FavoritesPage(),
               'instruVideo': (context) => InstructionalVideosPage(),
               'HealthPage': (context) => HealthPage(),
               'BankingPage': (context) => BankingPage(),

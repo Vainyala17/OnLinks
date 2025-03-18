@@ -22,17 +22,7 @@ class _MyLoginState extends State<MyLogin> {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
 
-      User? user = userCredential.user;
-
-      if (user != null && !user.emailVerified) {
-        await FirebaseAuth.instance.signOut(); // Prevent login if not verified
-        throw FirebaseAuthException(
-          code: 'email-not-verified',
-          message: 'Email is not verified. Please check your inbox.',
-        );
-      }
-
-      // Navigate to home page if email is verified
+      // Navigate to home page directly after login
       Navigator.pushReplacementNamed(context, "/home");
 
     } on FirebaseAuthException catch (e) {
@@ -41,6 +31,7 @@ class _MyLoginState extends State<MyLogin> {
       );
     }
   }
+
   void _scrollToField() {
     Future.delayed(Duration(milliseconds: 200), () {
       _scrollController.animateTo(

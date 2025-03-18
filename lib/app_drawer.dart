@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:share_plus/share_plus.dart';
 import '../PrivateInfo/userProfile.dart';
-import '../PrivateInfo/favourites.dart';
+import '../PrivateInfo/favorites.dart';
 import '../PrivateInfo/instructionalVideos.dart';
 import '../PrivateInfo/privacy_policy.dart';
 import '../PrivateInfo/settingPage.dart';

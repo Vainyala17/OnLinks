@@ -1,6 +1,6 @@
   import 'package:flutter/material.dart';
   import 'package:flutter_project/services/chat_screen.dart';
-  import 'PrivateInfo/favourites.dart';
+  import 'package:flutter_project/PrivateInfo/favorites.dart';
   import 'PrivateInfo/instructionalVideos.dart';
   import 'PrivateInfo/userProfile.dart';
   import 'home.dart';

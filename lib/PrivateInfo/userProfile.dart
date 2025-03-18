@@ -126,7 +126,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
               ],
             ),
             const SizedBox(height: 20),
-            _buildMenuItem(Icons.person, "Edit Profile", page: const EditProfilePage()),
+            _buildMenuItem(Icons.person, "Edit Profile", page: EditProfilePage()),
             _buildMenuItem(Icons.lock, "Change Password", page: const ChangePasswordPage()),
             _buildMenuItem(Icons.settings, "Settings", page: const SettingsPage()),
             _buildMenuItem(Icons.help, "FAQ", page: const FAQPage()),

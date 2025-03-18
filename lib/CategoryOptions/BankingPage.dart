@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../PrivateInfo/favourites.dart';
+import '../PrivateInfo/favorites.dart';
 
 class BankingPage extends StatefulWidget {
   @override

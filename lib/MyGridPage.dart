@@ -3,6 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+class FormData {
+  final String title;
+  final String url;
+
+  FormData({required this.title, required this.url});
+}
+
 class MyGridPage extends StatelessWidget {
   final String formUrl = 'https://example.com';
   final String videoUrl = 'https://youtube_video_link.com';
@@ -20,49 +27,48 @@ class MyGridPage extends StatelessWidget {
     Share.share(content);
   }
 
-  void _addToFavorites(String url) {
-    FirebaseFirestore.instance.collection('favorites').add({
-      'url': url,
-      'timestamp': FieldValue.serverTimestamp(),
-    });
+  void onFavorite(BuildContext context, FormData form) async {
+    try {
+      await FirebaseFirestore.instance.collection('favorites').add({
+        'title': form.title,
+        'url': form.url,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Added to favorites!")),
+      );
+    } catch (e) {
+      print("Error adding to favorites: $e");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Positioned(
-            top: -MediaQuery.of(context).size.height * 0.3, // Move grid up
-            left: -MediaQuery.of(context).size.width * 0.3, // Move grid left
-            right: -MediaQuery.of(context).size.width * 0.3, // Move grid right
-            bottom: -MediaQuery.of(context).size.height * 0.3, // Move grid down
-            child: GridView.count(
-              crossAxisCount: 2,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 1.0,
-              clipBehavior: Clip.none,
-              physics: NeverScrollableScrollPhysics(),
-              children: [
-                _buildGridItem(Icons.edit, "Fill the form here", () {
-                  _launchURL(formUrl);
-                }),
-                _buildGridItem(Icons.play_circle_fill, "Watch the video", () {
-                  _launchURL(videoUrl);
-                }),
-                _buildGridItem(Icons.share, "Share the link", () {
-                    _shareContent(
-                        "Check out this amazing app or link: https://yourlink.com");
-                    Navigator.pop(context);
-                }),
-                _buildGridItem(Icons.favorite, "Favorite", () {
-                  _addToFavorites(formUrl);
-                }),
-              ],
-            ),
-          ),
-        ],
+      appBar: AppBar(title: Text("Grid Page")),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: GridView.count(
+          crossAxisCount: 2,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+          childAspectRatio: 1.0,
+          children: [
+            _buildGridItem(Icons.edit, "Fill the form here", () {
+              _launchURL(formUrl);
+            }),
+            _buildGridItem(Icons.play_circle_fill, "Watch the video", () {
+              _launchURL(videoUrl);
+            }),
+            _buildGridItem(Icons.share, "Share the link", () {
+              _shareContent("Check out this amazing app or link: $formUrl");
+            }),
+            _buildGridItem(Icons.favorite, "Favorite", () {
+              onFavorite(context, FormData(title: "Sample Form", url: formUrl));
+            }),
+          ],
+        ),
       ),
     );
   }
