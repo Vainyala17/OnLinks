@@ -1,18 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_project/services/favorites_service.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class FormData {
+class LinkModel {
+  final String id;
   final String title;
   final String url;
 
-  FormData({required this.title, required this.url});
+  LinkModel({required this.id, required this.title, required this.url});
 }
 
 class MyGridPage extends StatelessWidget {
   final String formUrl = 'https://example.com';
   final String videoUrl = 'https://youtube_video_link.com';
+  final FavoritesService favoritesService = FavoritesService();
 
   Future<void> _launchURL(String url) async {
     Uri uri = Uri.parse(url);
@@ -27,24 +31,31 @@ class MyGridPage extends StatelessWidget {
     Share.share(content);
   }
 
-  void onFavorite(BuildContext context, FormData form) async {
-    try {
-      await FirebaseFirestore.instance.collection('favorites').add({
-        'title': form.title,
-        'url': form.url,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
+  void _saveToFavorites(BuildContext context, LinkModel linkData) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("You need to log in to save favorites!")),
+      );
+      return;
+    }
 
+    try {
+      await favoritesService.saveToFavorites(linkData.id, linkData.title, linkData.url);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Added to favorites!")),
       );
     } catch (e) {
-      print("Error adding to favorites: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to add to favorites.")),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final linkData = LinkModel(id: "123", title: "Example Form", url: formUrl);
+
     return Scaffold(
       appBar: AppBar(title: Text("Grid Page")),
       body: Padding(
@@ -65,7 +76,7 @@ class MyGridPage extends StatelessWidget {
               _shareContent("Check out this amazing app or link: $formUrl");
             }),
             _buildGridItem(Icons.favorite, "Favorite", () {
-              onFavorite(context, FormData(title: "Sample Form", url: formUrl));
+              _saveToFavorites(context, linkData);
             }),
           ],
         ),

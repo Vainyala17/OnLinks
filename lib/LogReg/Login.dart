@@ -19,19 +19,23 @@ class _MyLoginState extends State<MyLogin> {
   // Method to validate and submit form
   Future<void> _submitForm(String email, String password) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
+      print("Login Button Clicked!");  // Debugging
+      email = email.trim();
+      password = password.trim();
 
-      // Navigate to home page directly after login
-      Navigator.pushReplacementNamed(context, "/home");
-
-    } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message ?? "Login failed")),
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
       );
+      print("Login Success! Navigating...");
+      Navigator.pushReplacementNamed(context, "/home");
+    } catch (e) {
+      print("Firebase Auth Error: ${e.toString()}");
+      setState(() {
+        _message = "Invalid email or password.";
+      });
     }
   }
-
   void _scrollToField() {
     Future.delayed(Duration(milliseconds: 200), () {
       _scrollController.animateTo(

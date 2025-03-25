@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../PrivateInfo/favorites.dart';
-
 class BankingPage extends StatefulWidget {
   @override
   _BankingPageState createState() => _BankingPageState();
@@ -97,7 +95,13 @@ class _BankingPageState extends State<BankingPage> {
       child: ListTile(
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(10),
-          child: Image.network(form['image']!, width: 60, height: 60, fit: BoxFit.cover),
+          child: Image.network(
+            form['image']!,
+            width: 60,
+            height: 60,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => Icon(Icons.broken_image, size: 60, color: Colors.grey),
+          ),
         ),
         title: Text(form['title']!, style: TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text(form['description']!),
@@ -204,17 +208,19 @@ class FormDetailsPage extends StatelessWidget {
 void _shareContent(String content) {
   Share.share(content);
 }
+
 void _showError(BuildContext context) {
   ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text('No video available for this form.')),
+    SnackBar(content: Text('No video available for this form.'), duration: Duration(seconds: 2)),
   );
 }
 
+
 void _launchURL(String url) async {
-  Uri uri = Uri.parse(url);
-  if (await canLaunchUrl(uri)) {
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
-  } else {
-    throw 'Could not launch $url';
+  try {
+    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  } catch (e) {
+    debugPrint("Could not launch $url: $e");
   }
 }
+
