@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
+
+import '../PrivateInfo/FavoriteProvider.dart';
 
 class EducationPage extends StatefulWidget {
   @override
@@ -182,7 +185,7 @@ class FormDetailsPage extends StatelessWidget {
                     _shareContent("Check out this form: ${form['url']!}");
                   }),
                   _buildGridItem(Icons.favorite, "Favorite", () {
-                    onFavorite(form);
+                    Provider.of<FavoriteProvider>(context, listen: false).addFavorite(form);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("Added to favorites!")),
                     );

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
+
+import '../PrivateInfo/FavoriteProvider.dart';
 
 class GovernmentPage extends StatefulWidget {
   @override
@@ -15,35 +18,35 @@ class _GovernmentPageState extends State<GovernmentPage> {
       'description': 'Apply for an Indian Navy.',
       'url': 'https://www.joinindiannavy.gov.in/en/account/account/state',
       'image': 'https://images.careerindia.com/img/2022/03/indiannavy-1647586762.jpg',
-      'video': '',
+      'video': 'https://www.youtube.com/watch?v=_9lflKxKB-8',
     },
     {
       'title': 'Union Bank Saving Account Form',
-      'description': 'Joint Director Accounts & Treasuries Nagpur!',
+      'description': 'Apply for a Union Digital Savings Account!',
       'url': 'https://casa.unionbankofindia.co.in/savings-account/#/basic-details',
-      'image': 'https://st5.depositphotos.com/9851828/62088/v/450/depositphotos_620882968-stock-illustration-government-maharashtra-icon-lamp-sanskrit.jpg',
-      'video': '',
+      'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-3VhitzYajMduxAA-1KWY2ox_wMhvjsxLNA&s',
+      'video': 'https://www.youtube.com/watch?v=T-AVDhEUsck',
     },
     {
       'title': 'MahaGenco',
       'description': 'Recruitment for the post of Technician',
       'url': 'https://ibpsonline.ibps.in/mspgctjun23/',
       'image': 'https://getlogo.net/wp-content/uploads/2020/01/mahagenco-maharashtra-state-power-generation-co-ltd-logo-vector.png',
-      'video': '',
+      'video': 'https://www.youtube.com/watch?v=TBEfQdNSQWE',
     },
     {
       'title': 'CIDCO we make Cities',
       'description': 'CIDCO we make Cities Application form',
       'url': 'https://ibpsonline.ibps.in/cidcojul24/',
       'image': 'https://pbs.twimg.com/profile_images/1564205620274016256/J4dZtUo4_400x400.jpg',
-      'video': '',
+      'video': 'https://www.youtube.com/watch?v=dQQ7wNh5Pi0',
     },
     {
       'title': 'Indian Navy',
       'description': 'Apply for an Indian Navy.',
       'url': 'https://www.joinindiannavy.gov.in/en/account/account/state',
       'image': 'https://images.careerindia.com/img/2022/03/indiannavy-1647586762.jpg',
-      'video': '',
+      'video': 'https://www.youtube.com/watch?v=_9lflKxKB-8',
     },
   ];
 
@@ -168,7 +171,7 @@ class FormDetailsPage extends StatelessWidget {
                     _shareContent("Check out this form: ${form['url']!}");
                   }),
                   _buildGridItem(Icons.favorite, "Favorite", () {
-                    onFavorite(form);
+                    Provider.of<FavoriteProvider>(context, listen: false).addFavorite(form);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("Added to favorites!")),
                     );

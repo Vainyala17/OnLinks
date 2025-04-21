@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
+
+import '../PrivateInfo/FavoriteProvider.dart';
 
 class CertificatePage extends StatefulWidget {
   @override
@@ -22,7 +25,7 @@ class _CertificatePageState extends State<CertificatePage> {
       'description': 'Railway Recruitment Board.. Ministry of Railways, Government of India',
       'url': 'https://www.rrbapply.gov.in/#/auth/home?flag=true',
       'image': 'https://w7.pngwing.com/pngs/236/834/png-transparent-railway-recruitment-board-exam-rrb-rail-transport-south-eastern-railway-zone-indian-railways-others-miscellaneous-text-logo.png',
-      'video': ''
+      'video': 'https://www.youtube.com/watch?v=FrRER71N8bE'
     },
   ];
 
@@ -147,7 +150,7 @@ class FormDetailsPage extends StatelessWidget {
                     _shareContent("Check out this form: ${form['url']!}");
                   }),
                   _buildGridItem(Icons.favorite, "Favorite", () {
-                    onFavorite(form);
+                    Provider.of<FavoriteProvider>(context, listen: false).addFavorite(form);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("Added to favorites!")),
                     );

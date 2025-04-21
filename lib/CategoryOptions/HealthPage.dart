@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
+
+import '../PrivateInfo/FavoriteProvider.dart';
 
 class HealthPage extends StatefulWidget {
   @override
@@ -11,11 +14,25 @@ class _HealthPageState extends State<HealthPage> {
   List<Map<String, String>> favoriteForms = [];
   final List<Map<String, String>> forms = [
     {
-      'title': 'AIIMS Bhubaneswar Application Form',
-      'description': 'Apply for an AIIMS Bhubaneswar.',
-      'url': 'https://aiimsbbsrrecruitment.nic.in/Index/institute_register/ins/NzBjbmdUNi9IZ0hGOW1SSDZFWjRJUT09',
-      'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvtVQuWr0xI_Hlsu_AcsBhR2SdxwbfRTXNXQ&s',
-      'video': '',
+      'title': 'NEET UG',
+      'description': 'Apply for NEET UG Application form.',
+      'url': 'https://neet.nta.nic.in/',
+      'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRHw-IQaqgYSSiC0psQwJP_ihCUi5RUn21fw&s',
+      'video': 'https://www.youtube.com/watch?v=rYKw93Z87JI',
+    },
+    {
+      'title': 'MCH Application form',
+      'description': 'Maharashtra Council Of Homeopathy.',
+      'url': 'https://www.mchmumbai.org/',
+      'image': 'https://www.mchmumbai.org/Images/MCHLogo.png',
+      'video': 'https://www.youtube.com/watch?v=A-ODkMROkoQ',
+    },
+    {
+      'title': 'MMC Application form',
+      'description': 'Maharashtra Medical Council.',
+      'url': 'https://www.maharashtramedicalcouncil.in/',
+      'image': 'https://media.assettype.com/freepressjournal/2025-02-03/munss4iv/FotoJet-30.jpg',
+      'video': 'https://www.youtube.com/watch?v=iojW_6rH9cM',
     },
   ];
 
@@ -140,7 +157,7 @@ class FormDetailsPage extends StatelessWidget {
                     _shareContent("Check out this form: ${form['url']!}");
                   }),
                   _buildGridItem(Icons.favorite, "Favorite", () {
-                    onFavorite(form);
+                    Provider.of<FavoriteProvider>(context, listen: false).addFavorite(form);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("Added to favorites!")),
                     );

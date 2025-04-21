@@ -13,6 +13,7 @@ import 'CategoryOptions/HealthPage.dart';
 import 'LogReg/Login.dart';
 import 'LogReg/password.dart';
 import 'LogReg/register.dart';
+import 'PrivateInfo/FavoriteProvider.dart';
 import 'PrivateInfo/favorites.dart';
 import 'PrivateInfo/instructionalVideos.dart';
 import 'PrivateInfo/search_controller.dart';
@@ -128,10 +129,13 @@ class _MyAppState extends State<MyApp> {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return ChangeNotifierProvider(
-          create: (_) => CustomSearchController(),
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => CustomSearchController()),
+            ChangeNotifierProvider(create: (_) => FavoriteProvider()), // Add this line
+          ],
           child: MaterialApp(
-            theme: ThemeData.light(),
+          theme: ThemeData.light(),
             darkTheme: ThemeData.dark(),
             themeMode: _themeMode,
             debugShowCheckedModeBanner: false,
